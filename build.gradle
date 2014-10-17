@@ -1,0 +1,166 @@
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+
+import groovy.sql.Sql
+import org.apache.log4j.Logger
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    baseName = 'gs-gradle'
+    version =  '2.1'
+}
+
+war {
+		archiveName = 'openspecimen.war'
+    from('./') {
+        include 'allTokens.properties'
+        include 'bulkOperation.properties'
+    }
+    
+    
+}
+
+dependencies {
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.0.8'
+    
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.2.2'
+    
+    compile group: 'javax', name:'javaee-endorsed-api', version:'6.0'
+    
+    compile group: 'org.codehaus.jackson', name: 'jackson-core-asl', version: '1.9.2'
+    compile group: 'org.codehaus.jackson', name: 'jackson-jaxrs', version: '1.9.2'
+    compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.2'
+    compile group: 'org.codehaus.jackson', name: 'jackson-xc', version: '1.9.2'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.2.0'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.2.0'
+      
+    compile group: 'ant', name: 'ant-jakarta-oro', version: '1.6'
+    
+    compile group: 'com.sun.jersey', name: 'jersey-client', version: '1.17'
+    compile group: 'com.sun.jersey', name: 'jersey-core', version: '1.17'
+    compile group: 'com.sun.jersey', name: 'jersey-json', version: '1.17'
+    compile group: 'com.sun.jersey', name: 'jersey-server', version: '1.17'
+    compile group: 'com.sun.jersey', name: 'jersey-servlet', version: '1.17'
+    compile group: 'com.sun.jersey', name: 'jersey-bundle', version: '1.8'
+    
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.0.2'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.0.2'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-jcl', version: '2.0.2'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.0.2'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-web', version: '2.0.2'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-taglib', version: '2.0.2'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.0.2'
+    
+    compile group: 'org.hibernate', name: 'hibernate', version: '3.0'
+    
+    compile group: 'aopalliance', name: 'aopalliance', version: '1.0'
+    
+    compile group: 'asm', name: 'asm', version: '3.0'
+    compile group: 'asm', name: 'asm-tree', version: '3.0'
+    
+    compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.6.6'
+    
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    
+    compile group: 'net.sf.kxml',name: 'kxml2-min',version: '2.3.0'
+    
+    compile group: 'org.apache.lucene', name: 'lucene-core', version: '2.0.0'
+    
+    compile group: 'net.sf.opencsv', name: 'opencsv', version: '1.8'
+    
+    compile group: 'org.springframework',name:'spring-aop', version: '3.2.5.RELEASE'
+    compile group: 'org.springframework',name:'spring-beans', version: '3.2.5.RELEASE'
+    compile group: 'org.springframework',name:'spring-context', version: '3.2.5.RELEASE'
+    compile group: 'org.springframework',name:'spring-core', version: '3.2.5.RELEASE'
+    compile group: 'org.springframework',name:'spring-expression', version: '3.2.5.RELEASE'
+    compile group: 'org.springframework',name:'spring-jdbc', version: '3.2.5.RELEASE'
+    compile group: 'org.springframework',name:'spring-orm', version: '3.2.5.RELEASE'
+    compile group: 'org.springframework',name:'spring-test', version: '3.1.1.RELEASE'
+    compile group: 'org.springframework',name:'spring-tx', version: '3.2.5.RELEASE'
+    compile group: 'org.springframework',name:'spring-web', version: '3.2.5.RELEASE'
+    compile group: 'org.springframework',name:'spring-webmvc', version: '3.2.5.RELEASE'
+    compile group: 'org.springframework.security',name:'spring-security-core', version: '3.2.0.RELEASE'
+    
+    compile group: 'org.mockito', name:'mockito-all', version: '1.9.5'
+    
+    compile group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.4.4'
+    compile group: 'com.thoughtworks.xstream', name: 'xstream-hibernate', version: '1.4.4'
+    
+    compile group: 'commons-io', name: 'commons-io', version: '2.4'
+    compile group: 'org.apache.openejb', name: 'commons-dbcp-all', version: '1.3'
+    compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.2.1'
+    compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.3'
+    
+    compile files('WEB-INF/lib/AdvanceQuery.jar')
+    compile files('WEB-INF/lib/axis.jar')
+    compile files('WEB-INF/lib/backport-util-concurrent.jar')
+    compile files('WEB-INF/lib/BulkEMPIOperations.jar')
+    compile files('WEB-INF/lib/bulkoperator.jar')
+    compile files('WEB-INF/lib/castor-0.9.9.jar')
+    compile files('WEB-INF/lib/caTissueCdmsIntegration.jar')
+    compile files('WEB-INF/lib/catissuecore-client.jar')
+    compile files('WEB-INF/lib/cglib.jar')
+    compile files('WEB-INF/lib/cobertura.jar')
+    compile files('WEB-INF/lib/com.ibm.mqjms.jar')
+    compile files('WEB-INF/lib/commonpackage-1.3.1.jar')
+    compile files('WEB-INF/lib/commons-beanutils-1.8.3-1.0.jar')
+    compile files('WEB-INF/lib/commons-digester.jar')
+    compile files('WEB-INF/lib/commons-digester3-3.0-1.0.jar')
+    compile files('WEB-INF/lib/commons-lang.jar')
+    compile files('WEB-INF/lib/commons-logging.jar')
+    compile files('WEB-INF/lib/csmapi.jar')
+    compile files('WEB-INF/lib/DAO-1.1.9.7.jar')
+    compile files('WEB-INF/lib/Default_label_barcode_gen.jar')
+    compile files('WEB-INF/lib/dhtmlxconnector.jar')
+    compile files('WEB-INF/lib/dynamicextensions-legacy.jar')
+    compile files('WEB-INF/lib/DynamicExtensions.jar')
+    compile files('WEB-INF/lib/flex-acrobat.jar')
+    compile files('WEB-INF/lib/flex-bootstrap-jsp.jar')
+    compile files('WEB-INF/lib/flex-bootstrap.jar')
+    compile files('WEB-INF/lib/flex-messaging-common.jar')
+    compile files('WEB-INF/lib/flex-messaging-opt.jar')
+    compile files('WEB-INF/lib/flex-messaging-req.jar')
+    compile files('WEB-INF/lib/flex-messaging.jar')
+    compile files('WEB-INF/lib/IDPAuthenticationManager0_0.jar')
+    compile files('WEB-INF/lib/IdPJar.jar')
+    compile files('WEB-INF/lib/itextpdf-5.3.5.jar')
+    compile files('WEB-INF/lib/hibernate3.jar')
+    compile files('WEB-INF/lib/jaws.jar')
+    compile files('WEB-INF/lib/jaxb-impl.jar')
+    compile files('WEB-INF/lib/jaxb-libs.jar')
+    compile files('WEB-INF/lib/jaxb-xjc.jar')
+    compile files('WEB-INF/lib/jep-2.4.1.jar')
+    compile files('WEB-INF/lib/json.jar')
+    compile files('WEB-INF/lib/jstl.jar')
+    compile files('WEB-INF/lib/mail.jar')
+    compile files('lib/log4j.jar')
+    compile files('WEB-INF/lib/ojdbc14.jar')
+    compile files('WEB-INF/lib/ParticipantManager.jar')
+    compile files('WEB-INF/lib/PrintCatissueCore_Client.jar')
+    compile files('WEB-INF/lib/printservice_client.jar')
+    compile files('WEB-INF/lib/printservice_module.jar')
+    compile files('WEB-INF/lib/quartz.jar')
+    compile files('WEB-INF/lib/servlet.jar')
+    compile files('WEB-INF/lib/Stinger-2.6.1.jar')
+    compile files('WEB-INF/lib/SimpleQuery-1.1.9.2.2.jar')
+    compile files('WEB-INF/lib/securityManager-1.1.7.2.jar');
+    compile files('WEB-INF/lib/spring-cache.jar')
+    compile files('WEB-INF/lib/struts.jar')
+    compile files('WEB-INF/lib/struts-legacy.jar')
+    compile files('WEB-INF/lib/titli-washu-1.0.jar')
+    compile files('WEB-INF/lib/velocity-dep-1.5.jar')
+    compile files('WEB-INF/lib/washu-commons-1.2.w1.jar')
+    
+    compile files('deploytempCatissuecore/catissuecore/WEB-INF/lib/ehcache-1.2.2.jar')
+    compile files('lib/j2ee.jar')
+}
+	
+
+
