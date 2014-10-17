@@ -17,7 +17,7 @@ jar {
 }
 
 war {
-		archiveName = 'openspecimen.war'
+    archiveName = 'openspecimen.war'
     from('./') {
         include 'allTokens.properties'
         include 'bulkOperation.properties'
