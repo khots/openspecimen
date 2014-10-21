@@ -11,19 +11,121 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+  main {
+    output.resourcesDir = 'WEB-INF/resources'
+    output.classesDir   = 'WEB-INF/classes'
+  }
+}
+
 jar {
     baseName = 'gs-gradle'
     version =  '2.1'
 }
 
-war {
+//war {
+//    archiveName = 'openspecimen.war'
+    
+//    from zipTree(file('catissuecorecsm.war'))
+    
+//    classpath 'build/libs/caTissueCommonJar.jar'
+    
+//}
+
+jar {
+    baseName = 'caTissueCommonJar'
+    version =  ''
+    from sourceSets.main.output.classesDir 
+}
+
+task clean_build(type: Delete){
+    delete './build'
+}
+
+task unzip_bulkoperation_installable (type: Copy) {
+    from zipTree(file('bulkoperator.zip'))
+    into './build/bulkoperator'
+}
+
+task clean_temp_dir_csmwar(type: Delete) {
+    delete './build/catissuecorecsm'
+}
+
+task unpack_cacore_war (type: Copy, dependsOn: 'clean_temp_dir_csmwar') {
+    from zipTree(file('catissuecorecsm.war'))
+    into './build/catissuecorecsm'
+}
+
+task build_war (dependsOn:['clean_build','unpack_cacore_war','common_build_war']) { 
+}
+
+task common_build_war (dependsOn:'create_war') {
+}
+
+task bulkoperation_integrate_app {
+  println 'hello'
+}
+
+task integrate_bulk_operation {
+    unzip_bulkoperation_installable.execute()
+    bulkoperation_integrate_app.execute()
+}
+
+task create_war (type: War, dependsOn: integrate_bulk_operation) {
     archiveName = 'openspecimen.war'
-    from('./') {
-        include 'allTokens.properties'
-        include 'bulkOperation.properties'
-    }
+  
+    classpath 'build/libs/caTissueCommonJar.jar'
     
-    
+    from('./') { 
+        include 'ngweb/**' 
+        include 'css/**' 
+        include 'images/**' 
+        include 'jss/**' 
+        include 'javascripts/**' 
+        include 'deploytempCatissuecore/AdvanceQuery/dhtml/**'
+        include 'dhtml_comp/**' 
+        include 'newDhtmlx/**'
+        include 'dhtmlx_suite/**' 
+        include 'dhtmlxSuite_v35/**' 
+        include 'pages/**' 
+        include 'flexclient/**' 
+        include 'runtime/**' 
+        include 'WEB-INF/**' 	
+        include 'CDEConfig.xml' 
+        include 'CDEConfig.xsd' 
+        include 'client-config.wsdd' 
+        include 'Applet/**' 
+        include 'ApplicationVersionInfo.txt' 
+        include 'caTissue_Suite_User_Manual.pdf' 
+        include 'caTissue_Suite_User_Manual.doc' 
+        include 'caTissueSuite_v1_2_Technical_Guide.doc' 
+        include 'caTissueSuiteV11_UML.zip' 
+	      
+        include '**/WEB-INF/classes/**/cdms/CdmsIntegratorImpl.class'
+        include 'ParticipantConfigXMLTemplateRules.xml'
+		
+        exclude '**/WEB-INF/classes/**/namegenerator/*'
+        exclude '**/WEB-INF/classes/**/cdms/*'
+	
+        exclude 'common_code'
+        exclude '**/pages/subMenu/**' 
+        exclude '**/log4j.properties' 
+        exclude '**/src/main/java*/**' 
+        exclude '**/WEB-INF/lib/*.zip' 
+        exclude '**/WEB-INF/lib/ant-jmeter.jar' 
+        exclude '**/WEB-INF/lib/junit-4.11.jar' 
+        exclude '**/WEB-INF/lib/mockito-all-1.9.5.jar' 	
+        exclude '**/WEB-INF/lib/cobertura.jar'
+			
+        exclude '**/WEB-INF/lib/junit*.jar' 
+        exclude '**/*servlet.jar*' 
+        exclude '**/*hibernate2.jar*' 
+        exclude '**/*jta.jar*' 
+        exclude '**/CVS*' 
+        exclude '**/WEB-INF/lib/jta.jar' 
+			
+        exclude '**/WEB-INF/lib/jboss-common-jdbc-wrapper.jar'
+    }  
 }
 
 dependencies {
