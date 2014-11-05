@@ -1,11 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'war'
-apply plugin: 'eclipse'
-apply plugin: 'application'
 apply plugin: 'maven'
-
-import groovy.sql.Sql
-import org.apache.log4j.Logger
 
 repositories {
     mavenCentral()
@@ -39,11 +34,11 @@ task unzip_bulkoperation_installable (type: Copy) {
     into './build/tmp/bulkoperator'
 }
 
-task clean_temp_dir_csmwar(type: Delete) {
+task clean_temp_dir_csm_war(type: Delete) {
     delete './build/tmp/catissuecorecsm'
 }
 
-task unpack_cacore_war (type: Copy, dependsOn: 'clean_temp_dir_csmwar') {
+task unpack_csm_war (type: Copy, dependsOn: 'clean_temp_dir_csm_war') {
     from zipTree(file('catissuecorecsm.war'))
     into './build/tmp/catissuecorecsm'
 }
@@ -52,8 +47,6 @@ task create_war (type: War) {
     archiveName = 'openspecimen.war'
   
     //classpath 'build/libs/caTissueCommonJar.jar'
-    
-    exclude 'WEB-INF/lib/*' 
            
     from ('./') {
         include 'ngweb/**'
@@ -61,10 +54,6 @@ task create_war (type: War) {
         include 'images/**'
         include 'jss/**'
         include 'javascripts/**'
-        include 'deploytempCatissuecore/AdvanceQuery/dhtml/**'
-        include 'dhtml_comp/**'
-        include 'newDhtmlx/**'
-        include 'dhtmlx_suite/**'
         include 'dhtmlxSuite_v35/**' 
         include 'pages/**'
         include 'flexclient/**'
@@ -100,74 +89,8 @@ task create_war (type: War) {
     
         exclude '**/WEB-INF/web.xml'
         exclude '**/WEB-INF/classes/edu/wustl/catissuecore/domain/**'
-        exclude '**/WEB-INF/lib/activation.jar'
-        exclude '**/WEB-INF/lib/ant.jar'
-        exclude '**/WEB-INF/lib/antlr-2.7.6.jar'
-        exclude '**/WEB-INF/lib/ant-testutil.jar'
-	
-        exclude '**/WEB-INF/lib/asm-attrs.jar'
-        exclude '**/WEB-INF/lib/axis.jar'
-        exclude '**/WEB-INF/lib/axis-ant.jar'
-        exclude '**/WEB-INF/lib/backport-util-concurrent-3.0.jar'
-		
-        exclude '**/WEB-INF/lib/c3p0-0.9.0.jar'
-        exclude '**/WEB-INF/lib/cglib-2.1.3.jar'
-        exclude '**/WEB-INF/lib/codegen.jar'
-        exclude '**/WEB-INF/lib/commons-beanutils.jar'
-        exclude '**/WEB-INF/lib/commons-collections-3.1.jar'
-        exclude '**/WEB-INF/lib/commons-collections-3.2.jar'
-        exclude '**/WEB-INF/lib/commons-dbcp-1.2.1.jar'
-        exclude '**/WEB-INF/lib/commons-discovery-0.2.jar'
-        exclude '**/WEB-INF/lib/commons-lang-2.1.jar'
-        exclude '**/WEB-INF/lib/commons-pool-1.3.jar'
-        exclude '**/WEB-INF/lib/csmapi.jar'
-        exclude '**/WEB-INF/lib/datafile.jar'
-        exclude '**/WEB-INF/lib/db2java.jar'
-        exclude '**/WEB-INF/lib/dom4j-1.6.1.jar'
-        exclude '**/WEB-INF/lib/dtsrpcclient.jar'
-        exclude '**/WEB-INF/lib/freemarker.jar'
-        exclude '**/WEB-INF/lib/freemarker-2.3.4.jar'
-        exclude '**/WEB-INF/lib/hibernate3.jar'
-        exclude '**/WEB-INF/lib/jakarta-oro-2.0.8.jar'
-        exclude '**/WEB-INF/lib/jalopy-1.0b11.jar'
-        exclude '**/WEB-INF/lib/jalopy-ant-0.6.2.jar'
-        exclude '**/WEB-INF/lib/jaxen-jdom.jar'
-        exclude '**/WEB-INF/lib/jaxrpc.jar'
-        exclude '**/WEB-INF/lib/jboss-client.jar'
-	
-        exclude '**/WEB-INF/lib/jdtcore.jar'
-        exclude '**/WEB-INF/lib/jetc-task.jar'
-        exclude '**/WEB-INF/lib/jmiutils.jar'
-        exclude '**/WEB-INF/lib/jta.jar'
-        exclude '**/WEB-INF/lib/junit-3.8.1.jar'
-        exclude '**/WEB-INF/lib/mail.jar'
-        exclude '**/WEB-INF/lib/mdrant.jar'
-        exclude '**/WEB-INF/lib/mdrapi.jar'
-        exclude '**/WEB-INF/lib/Metaphrase.jar'
-        exclude '**/WEB-INF/lib/mof.jar'
-        exclude '**/WEB-INF/lib/mysql-connector-java-3.1.13-bin.jar'
-        exclude '**/WEB-INF/lib/nbmdr.jar'
-        exclude '**/WEB-INF/lib/ognl-2.6.7.jar'
-        exclude '**/WEB-INF/lib/ojdbc14.jar'
-        exclude '**/WEB-INF/lib/openide-util.jar'
-        exclude '**/WEB-INF/lib/osgi.jar'
-        exclude '**/WEB-INF/lib/p6spy.jar'
-        exclude '**/WEB-INF/lib/resources.jar'
-        exclude '**/WEB-INF/lib/retrotranslator-runtime-1.2.0.jar'
-        exclude '**/WEB-INF/lib/retrotranslator-transformer-1.2.0.jar'
-        exclude '**/WEB-INF/lib/runtime.jar'
-        exclude '**/WEB-INF/lib/saaj.jar'
-        exclude '**/WEB-INF/lib/serializer.jar'
-        exclude '**/WEB-INF/lib/struts2-api-j4-2.0.5.jar'
-        exclude '**/WEB-INF/lib/struts2-core-j4-2.0.5.jar'
-        exclude '**/WEB-INF/lib/uml-1.3.jar'
-        exclude '**/WEB-INF/lib/uuid-key-generator.jar'
-        exclude '**/WEB-INF/lib/wsdl4j-1.5.1.jar'
-        exclude '**/WEB-INF/lib/xalan.jar'
-        exclude '**/WEB-INF/lib/xercesImpl.jar'
-        exclude '**/WEB-INF/lib/xml-apis.jar'
-        exclude '**/WEB-INF/lib/xmlrpc-2.0.jar'
-        exclude '**/WEB-INF/lib/xwork-j4-2.0.0.jar'
+        
+        exclude '**/WEB-INF/lib/**'        
         exclude '**/META-INF/**'
         exclude 'Happy.jsp'
         exclude 'Criteria.jsp'
@@ -178,74 +101,47 @@ task create_war (type: War) {
 task common_build_war (dependsOn:'create_war') {
 }
 
-common_build_war.shouldRunAfter unpack_cacore_war
+common_build_war.shouldRunAfter unpack_csm_war
 
-task build_war (dependsOn:['clean_build','unpack_cacore_war','common_build_war']) { 
+task build_war (dependsOn:['clean_build','compileTestCases','unpack_csm_war','common_build_war']) { 
 }
 
-task bulkoperation_integrate_app {    
+task compile (dependsOn:'compile') {  
 }
 
-task integrate_bulk_operation {
-    unzip_bulkoperation_installable.execute()
-    bulkoperation_integrate_app.execute()
-}
-
-task instrument {
-}
-
-task compileTestCases (dependsOn:'test') {
-  
-}
-
-
-task deploy(dependsOn: build_war, type: Copy) {
-    from('build/libs/') {
-        include '*.war'
-    }
-    into '/home/krishagni/jboss-5.1.0.GA/server/default/deploy'
+task compileTestCases (dependsOn:'test') {  
 }
 
 dependencies {
     providedCompile group: 'mysql', name: 'mysql-connector-java', version: '5.0.8'
-    
-    compile group: 'com.google.code.gson', name: 'gson', version: '2.2.2'
-    
+    providedCompile group: 'kspl.os', name: 'j2ee', version: '2.0'
     providedCompile group: 'javax', name:'javaee-endorsed-api', version:'6.0'
-    
+    providedCompile group: 'ant', name: 'ant-jakarta-oro', version: '1.6'
+    providedCompile group: 'com.sun.jersey', name: 'jersey-client', version: '1.17'
+    providedCompile group: 'com.sun.jersey', name: 'jersey-core', version: '1.17'
+    providedCompile group: 'com.sun.jersey', name: 'jersey-json', version: '1.17'
+    providedCompile group: 'com.sun.jersey', name: 'jersey-server', version: '1.17'
+    providedCompile group: 'com.sun.jersey', name: 'jersey-servlet', version: '1.17'       
+    providedCompile group: 'org.mockito', name:'mockito-all', version: '1.9.5'
+    providedCompile group: 'kspl.os', name: 'backport-util-concurrent', version: '2.0'
+    providedCompile group: 'kspl.os', name: 'BulkEMPIOperations', version: '2.0'
+    providedCompile group: 'kspl.os', name: 'commons-logging', version: '1.0'
+ 
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.2.2'
     compile group: 'org.codehaus.jackson', name: 'jackson-core-asl', version: '1.9.2'
     compile group: 'org.codehaus.jackson', name: 'jackson-jaxrs', version: '1.9.2'
     compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.2'
     compile group: 'org.codehaus.jackson', name: 'jackson-xc', version: '1.9.2'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.2.0'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.2.0'
-      
-    providedCompile group: 'ant', name: 'ant-jakarta-oro', version: '1.6'
-    
-    providedCompile group: 'com.sun.jersey', name: 'jersey-client', version: '1.17'
-    providedCompile group: 'com.sun.jersey', name: 'jersey-core', version: '1.17'
-    providedCompile group: 'com.sun.jersey', name: 'jersey-json', version: '1.17'
-    providedCompile group: 'com.sun.jersey', name: 'jersey-server', version: '1.17'
-    providedCompile group: 'com.sun.jersey', name: 'jersey-servlet', version: '1.17'
-    
     compile group: 'com.sun.jersey', name: 'jersey-bundle', version: '1.8'
-     
-    //compile group: 'org.hibernate', name: 'hibernate', version: '3.0'
-    
     compile group: 'aopalliance', name: 'aopalliance', version: '1.0'
-    
     compile group: 'asm', name: 'asm', version: '3.0'
     compile group: 'asm', name: 'asm-tree', version: '3.0'
     compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.6.6'
-   
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-    
     compile group: 'net.sf.kxml',name: 'kxml2-min',version: '2.3.0'
-    
     compile group: 'org.apache.lucene', name: 'lucene-core', version: '2.0.0'
-    
     compile group: 'net.sf.opencsv', name: 'opencsv', version: '1.8'
-    
     compile group: 'org.springframework',name:'spring-aop', version: '3.2.5.RELEASE'
     compile group: 'org.springframework',name:'spring-beans', version: '3.2.5.RELEASE'
     compile group: 'org.springframework',name:'spring-context', version: '3.2.5.RELEASE'
@@ -258,56 +154,34 @@ dependencies {
     compile group: 'org.springframework',name:'spring-web', version: '3.2.5.RELEASE'
     compile group: 'org.springframework',name:'spring-webmvc', version: '3.2.5.RELEASE'
     compile group: 'org.springframework.security',name:'spring-security-core', version: '3.2.0.RELEASE'
-    
-    providedCompile group: 'org.mockito', name:'mockito-all', version: '1.9.5'
-    
     compile group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.4.4'
     compile group: 'com.thoughtworks.xstream', name: 'xstream-hibernate', version: '1.4.4'
-    
     compile group: 'commons-io', name: 'commons-io', version: '2.4'
     compile group: 'org.apache.openejb', name: 'commons-dbcp-all', version: '1.3'
     compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.2.1'
     compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
     compile group: 'commons-codec', name: 'commons-codec', version: '1.3'
     compile group: 'net.sf.ehcache', name: 'ehcache', version: '1.2.2'
-     
     compile group: 'kspl.os', name: 'AdvanceQuery', version: '1.0'
-    compile group: 'kspl.os', name: 'axis', version: '2.0'
- 
-    providedCompile group: 'kspl.os', name: 'backport-util-concurrent', version: '2.0'
-    providedCompile group: 'kspl.os', name: 'BulkEMPIOperations', version: '2.0'
-    
+    compile group: 'kspl.os', name: 'axis', version: '2.0'   
     compile group: 'kspl.os', name: 'bulkoperator', version: '2.0'
-    compile 'castor:castor:0.9.9'
-    
+    compile group: 'castor', name: 'castor', version:'0.9.9'
     compile group: 'kspl.os', name: 'caTissueCdmsIntegration', version: '2.0'
-    
     compile group: 'kspl.os', name: 'catissuecore-client', version: '2.0'
-    
     compile group: 'kspl.os', name: 'cglib', version: '2.0'
-    
     compile group: 'kspl.os', name: 'cobertura', version: '2.0'
     compile group: 'kspl.os', name: 'com.ibm.mqjms', version: '2.0'
-    
     compile group: 'kspl.os', name: 'commonpackage', version: '1.3.1'
     compile group: 'kspl.os', name: 'commons-beanutils-1.8.3', version: '1.0'
     compile group: 'kspl.os', name: 'commons-digester', version: '2.0'
     compile group: 'kspl.os', name: 'commons-digester3-3.0', version: '1.0'
     compile group: 'kspl.os', name: 'commons-lang', version: '1.0'
-    
-    providedCompile group: 'kspl.os', name: 'commons-logging', version: '1.0'
-    
     compile group: 'kspl.os', name: 'csmapi', version: '1.0'
-    
     compile group: 'kspl.os', name: 'DAO', version: '1.1.9.7'
-    
     compile group: 'kspl.os', name: 'Default_label_barcode_gen', version: '2.0'
-    
     compile group: 'kspl.os', name: 'dhtmlxconnector', version: '2.0'
     compile group: 'kspl.os', name: 'dynamicextensions-legacy', version: '1.0'
-    
     compile group: 'kspl.os', name: 'DynamicExtensions', version: '1.0'
-    
     compile group: 'kspl.os', name: 'flex-acrobat', version: '1.0'
     compile group: 'kspl.os', name: 'flex-bootstrap-jsp', version: '1.0'
     compile group: 'kspl.os', name: 'flex-bootstrap', version: '1.0'
@@ -315,45 +189,41 @@ dependencies {
     compile group: 'kspl.os', name: 'flex-messaging-opt', version: '1.0'
     compile group: 'kspl.os', name: 'flex-messaging-req', version: '1.0'
     compile group: 'kspl.os', name: 'flex-messaging', version: '1.0'
-    
     compile group: 'kspl.os', name: 'IDPAuthenticationManager0_0', version: '1.0'
     compile group: 'kspl.os', name: 'IdPJar', version: '1.0'
-    
     compile group: 'kspl.os', name: 'itextpdf', version: '5.3.5'
-    
     compile group: 'kspl.os', name: 'hibernate3', version: '3.0'
-    
     compile group: 'kspl.os', name: 'jaws', version: '2.0'
     compile group: 'kspl.os', name: 'jaxb-impl', version: '3.0'
     compile group: 'kspl.os', name: 'jaxb-libs', version: '3.0'
     compile group: 'kspl.os', name: 'jaxb-xjc', version: '3.0'
-        
     compile group: 'kspl.os', name: 'jep', version: '2.4.1'
-    
     compile group: 'kspl.os', name: 'json', version: '2.0'
     compile group: 'kspl.os', name: 'jstl', version: '2.0'
     compile group: 'kspl.os', name: 'mail', version: '2.0'
     compile group: 'kspl.os', name: 'log4j', version: '2.0'
     compile group: 'kspl.os', name: 'ojdbc14', version: '2.0'
-    
     compile group: 'kspl.os', name: 'ParticipantManager', version: '2.0'
     compile group: 'kspl.os', name: 'PrintCatissueCore_Client', version: '2.0'
     compile group: 'kspl.os', name: 'printservice_client', version: '2.0'
     compile group: 'kspl.os', name: 'printservice_module', version: '2.0'
     compile group: 'kspl.os', name: 'quartz', version: '2.0'
     compile group: 'kspl.os', name: 'servlet', version: '2.0'
-    
     compile group: 'kspl.os', name: 'Stinger', version: '2.6.1'
     compile group: 'kspl.os', name: 'SimpleQuery', version: '1.1.9.2.2'
     compile group: 'kspl.os', name: 'securityManager', version: '1.1.7.2'
-    
     compile group: 'kspl.os', name: 'spring-cache', version: '2.0'
     compile group: 'kspl.os', name: 'struts', version: '2.0'
     compile group: 'kspl.os', name: 'struts-legacy', version: '2.0'
-    
     compile group: 'kspl.os', name: 'titli-washu', version: '1.0'
     compile group: 'kspl.os', name: 'velocity-dep', version: '1.5'
     compile group: 'kspl.os', name: 'washu-commons', version: '1.2.w1'
+    
+    compile group: 'kspl.os', name: 'clm', version: '2.0'
+    compile group: 'kspl.os', name: 'jaxen-jdom', version: '2.0'
+    compile group: 'kspl.os', name: 'jdom', version: '2.0'
+    compile group: 'kspl.os', name: 'jmi', version: '2.0'
+    compile group: 'kspl.os', name: 'saxpath', version: '2.0'
    
-    providedCompile group: 'kspl.os', name: 'j2ee', version: '2.0'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
 }
