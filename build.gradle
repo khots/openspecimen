@@ -4,9 +4,6 @@ apply plugin: 'eclipse'
 apply plugin: 'application'
 apply plugin: 'maven'
 
-group = "kspl.os"
-version = "2.0"
-
 import groovy.sql.Sql
 import org.apache.log4j.Logger
 
