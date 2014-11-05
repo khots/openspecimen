@@ -2,12 +2,17 @@ apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'eclipse'
 apply plugin: 'application'
+apply plugin: 'maven'
+
+group = "kspl.os"
+version = "2.0"
 
 import groovy.sql.Sql
 import org.apache.log4j.Logger
 
 repositories {
     mavenCentral()
+    maven { url "https://github.com/asamgir/maven-repository/raw/master" }
 }
 
 sourceSets {
@@ -227,24 +232,15 @@ dependencies {
     providedCompile group: 'com.sun.jersey', name: 'jersey-servlet', version: '1.17'
     
     compile group: 'com.sun.jersey', name: 'jersey-bundle', version: '1.8'
-    
-   // compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.0.2'
-   // compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.0.2'
-   // compile group: 'org.apache.logging.log4j', name: 'log4j-jcl', version: '2.0.2'
-   // compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.0.2'
-   // compile group: 'org.apache.logging.log4j', name: 'log4j-web', version: '2.0.2'
-   // compile group: 'org.apache.logging.log4j', name: 'log4j-taglib', version: '2.0.2'
-   // compile group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: '2.0.2'
-    
-    compile group: 'org.hibernate', name: 'hibernate', version: '3.0'
+     
+    //compile group: 'org.hibernate', name: 'hibernate', version: '3.0'
     
     compile group: 'aopalliance', name: 'aopalliance', version: '1.0'
     
     compile group: 'asm', name: 'asm', version: '3.0'
     compile group: 'asm', name: 'asm-tree', version: '3.0'
-    
     compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.6.6'
-    
+   
     testCompile group: 'junit', name: 'junit', version: '4.11'
     
     compile group: 'net.sf.kxml',name: 'kxml2-min',version: '2.3.0'
@@ -276,71 +272,91 @@ dependencies {
     compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.2.1'
     compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
     compile group: 'commons-codec', name: 'commons-codec', version: '1.3'
+    compile group: 'net.sf.ehcache', name: 'ehcache', version: '1.2.2'
+     
+    compile group: 'kspl.os', name: 'AdvanceQuery', version: '1.0'
+    compile group: 'kspl.os', name: 'axis', version: '2.0'
+ 
+    providedCompile group: 'kspl.os', name: 'backport-util-concurrent', version: '2.0'
+    providedCompile group: 'kspl.os', name: 'BulkEMPIOperations', version: '2.0'
     
-    compile files('WEB-INF/lib/AdvanceQuery.jar')
-    compile files('WEB-INF/lib/axis.jar')
+    compile group: 'kspl.os', name: 'bulkoperator', version: '2.0'
+    compile 'castor:castor:0.9.9'
     
-    providedCompile files('WEB-INF/lib/backport-util-concurrent.jar')
+    compile group: 'kspl.os', name: 'caTissueCdmsIntegration', version: '2.0'
     
-    compile files('WEB-INF/lib/BulkEMPIOperations.jar')
-    compile files('WEB-INF/lib/bulkoperator.jar')
-    compile files('WEB-INF/lib/castor-0.9.9.jar')
-    compile files('WEB-INF/lib/caTissueCdmsIntegration.jar')
-    compile files('WEB-INF/lib/catissuecore-client.jar')
-    compile files('WEB-INF/lib/cglib.jar')
-    compile files('WEB-INF/lib/cobertura.jar')
-    compile files('WEB-INF/lib/com.ibm.mqjms.jar')
-    compile files('WEB-INF/lib/commonpackage-1.3.1.jar')
-    compile files('WEB-INF/lib/commons-beanutils-1.8.3-1.0.jar')
-    compile files('WEB-INF/lib/commons-digester.jar')
-    compile files('WEB-INF/lib/commons-digester3-3.0-1.0.jar')
-    compile files('WEB-INF/lib/commons-lang.jar')
+    compile group: 'kspl.os', name: 'catissuecore-client', version: '2.0'
     
-    providedCompile files('WEB-INF/lib/commons-logging.jar')
+    compile group: 'kspl.os', name: 'cglib', version: '2.0'
     
-    compile files('WEB-INF/lib/csmapi.jar')
-    compile files('WEB-INF/lib/DAO-1.1.9.7.jar')
-    compile files('WEB-INF/lib/Default_label_barcode_gen.jar')
-    compile files('WEB-INF/lib/dhtmlxconnector.jar')
-    compile files('WEB-INF/lib/dynamicextensions-legacy.jar')
-    compile files('WEB-INF/lib/DynamicExtensions.jar')
-    compile files('WEB-INF/lib/flex-acrobat.jar')
-    compile files('WEB-INF/lib/flex-bootstrap-jsp.jar')
-    compile files('WEB-INF/lib/flex-bootstrap.jar')
-    compile files('WEB-INF/lib/flex-messaging-common.jar')
-    compile files('WEB-INF/lib/flex-messaging-opt.jar')
-    compile files('WEB-INF/lib/flex-messaging-req.jar')
-    compile files('WEB-INF/lib/flex-messaging.jar')
-    compile files('WEB-INF/lib/IDPAuthenticationManager0_0.jar')
-    compile files('WEB-INF/lib/IdPJar.jar')
-    compile files('WEB-INF/lib/itextpdf-5.3.5.jar')
-    compile files('WEB-INF/lib/hibernate3.jar')
-    compile files('WEB-INF/lib/jaws.jar')
-    compile files('WEB-INF/lib/jaxb-impl.jar')
-    compile files('WEB-INF/lib/jaxb-libs.jar')
-    compile files('WEB-INF/lib/jaxb-xjc.jar')
-    compile files('WEB-INF/lib/jep-2.4.1.jar')
-    compile files('WEB-INF/lib/json.jar')
-    compile files('WEB-INF/lib/jstl.jar')
-    compile files('WEB-INF/lib/mail.jar')
-    compile files('lib/log4j.jar')
-    compile files('WEB-INF/lib/ojdbc14.jar')
-    compile files('WEB-INF/lib/ParticipantManager.jar')
-    compile files('WEB-INF/lib/PrintCatissueCore_Client.jar')
-    compile files('WEB-INF/lib/printservice_client.jar')
-    compile files('WEB-INF/lib/printservice_module.jar')
-    compile files('WEB-INF/lib/quartz.jar')
-    compile files('WEB-INF/lib/servlet.jar')
-    compile files('WEB-INF/lib/Stinger-2.6.1.jar')
-    compile files('WEB-INF/lib/SimpleQuery-1.1.9.2.2.jar')
-    compile files('WEB-INF/lib/securityManager-1.1.7.2.jar');
-    compile files('WEB-INF/lib/spring-cache.jar')
-    compile files('WEB-INF/lib/struts.jar')
-    compile files('WEB-INF/lib/struts-legacy.jar')
-    compile files('WEB-INF/lib/titli-washu-1.0.jar')
-    compile files('WEB-INF/lib/velocity-dep-1.5.jar')
-    compile files('WEB-INF/lib/washu-commons-1.2.w1.jar')
+    compile group: 'kspl.os', name: 'cobertura', version: '2.0'
+    compile group: 'kspl.os', name: 'com.ibm.mqjms', version: '2.0'
     
-    compile files('deploytempCatissuecore/catissuecore/WEB-INF/lib/ehcache-1.2.2.jar')
-    providedCompile files('lib/j2ee.jar')
+    compile group: 'kspl.os', name: 'commonpackage', version: '1.3.1'
+    compile group: 'kspl.os', name: 'commons-beanutils-1.8.3', version: '1.0'
+    compile group: 'kspl.os', name: 'commons-digester', version: '2.0'
+    compile group: 'kspl.os', name: 'commons-digester3-3.0', version: '1.0'
+    compile group: 'kspl.os', name: 'commons-lang', version: '1.0'
+    
+    providedCompile group: 'kspl.os', name: 'commons-logging', version: '1.0'
+    
+    compile group: 'kspl.os', name: 'csmapi', version: '1.0'
+    
+    compile group: 'kspl.os', name: 'DAO', version: '1.1.9.7'
+    
+    compile group: 'kspl.os', name: 'Default_label_barcode_gen', version: '2.0'
+    
+    compile group: 'kspl.os', name: 'dhtmlxconnector', version: '2.0'
+    compile group: 'kspl.os', name: 'dynamicextensions-legacy', version: '1.0'
+    
+    compile group: 'kspl.os', name: 'DynamicExtensions', version: '1.0'
+    
+    compile group: 'kspl.os', name: 'flex-acrobat', version: '1.0'
+    compile group: 'kspl.os', name: 'flex-bootstrap-jsp', version: '1.0'
+    compile group: 'kspl.os', name: 'flex-bootstrap', version: '1.0'
+    compile group: 'kspl.os', name: 'flex-messaging-common', version: '1.0'
+    compile group: 'kspl.os', name: 'flex-messaging-opt', version: '1.0'
+    compile group: 'kspl.os', name: 'flex-messaging-req', version: '1.0'
+    compile group: 'kspl.os', name: 'flex-messaging', version: '1.0'
+    
+    compile group: 'kspl.os', name: 'IDPAuthenticationManager0_0', version: '1.0'
+    compile group: 'kspl.os', name: 'IdPJar', version: '1.0'
+    
+    compile group: 'kspl.os', name: 'itextpdf', version: '5.3.5'
+    
+    compile group: 'kspl.os', name: 'hibernate3', version: '3.0'
+    
+    compile group: 'kspl.os', name: 'jaws', version: '2.0'
+    compile group: 'kspl.os', name: 'jaxb-impl', version: '3.0'
+    compile group: 'kspl.os', name: 'jaxb-libs', version: '3.0'
+    compile group: 'kspl.os', name: 'jaxb-xjc', version: '3.0'
+        
+    compile group: 'kspl.os', name: 'jep', version: '2.4.1'
+    
+    compile group: 'kspl.os', name: 'json', version: '2.0'
+    compile group: 'kspl.os', name: 'jstl', version: '2.0'
+    compile group: 'kspl.os', name: 'mail', version: '2.0'
+    compile group: 'kspl.os', name: 'log4j', version: '2.0'
+    compile group: 'kspl.os', name: 'ojdbc14', version: '2.0'
+    
+    compile group: 'kspl.os', name: 'ParticipantManager', version: '2.0'
+    compile group: 'kspl.os', name: 'PrintCatissueCore_Client', version: '2.0'
+    compile group: 'kspl.os', name: 'printservice_client', version: '2.0'
+    compile group: 'kspl.os', name: 'printservice_module', version: '2.0'
+    compile group: 'kspl.os', name: 'quartz', version: '2.0'
+    compile group: 'kspl.os', name: 'servlet', version: '2.0'
+    
+    compile group: 'kspl.os', name: 'Stinger', version: '2.6.1'
+    compile group: 'kspl.os', name: 'SimpleQuery', version: '1.1.9.2.2'
+    compile group: 'kspl.os', name: 'securityManager', version: '1.1.7.2'
+    
+    compile group: 'kspl.os', name: 'spring-cache', version: '2.0'
+    compile group: 'kspl.os', name: 'struts', version: '2.0'
+    compile group: 'kspl.os', name: 'struts-legacy', version: '2.0'
+    
+    compile group: 'kspl.os', name: 'titli-washu', version: '1.0'
+    compile group: 'kspl.os', name: 'velocity-dep', version: '1.5'
+    compile group: 'kspl.os', name: 'washu-commons', version: '1.2.w1'
+   
+    providedCompile group: 'kspl.os', name: 'j2ee', version: '2.0'
 }
