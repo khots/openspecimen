@@ -34,11 +34,8 @@ task unzip_bulkoperation_installable (type: Copy) {
     into './build/tmp/bulkoperator'
 }
 
-task clean_temp_dir_csm_war(type: Delete) {
+task unpack_csm_war (type: Copy) {
     delete './build/tmp/catissuecorecsm'
-}
-
-task unpack_csm_war (type: Copy, dependsOn: 'clean_temp_dir_csm_war') {
     from zipTree(file('catissuecorecsm.war'))
     into './build/tmp/catissuecorecsm'
 }
