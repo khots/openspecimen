@@ -2,6 +2,30 @@ apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'maven'
 
+def env = '$environment-env';
+def envScript;
+
+if (env == 'prod') {
+    envScript = file("gradle/prod.gradle")
+    if (!envScript.exists()) {
+      throw new GradleException("Unknown environment: $environment")
+    }
+}
+else if (env == 'test') {
+    envScript = file("gradle/test.gradle")
+    if (!envScript.exists()) {
+      throw new GradleException("Unknown environment: $environment")
+    }
+}
+else {
+    envScript = file("gradle/dev.gradle")
+    if (!envScript.exists()) {
+      throw new GradleException("Unknown environment: $environment")
+    }
+}
+
+apply from: envScript
+
 repositories {
     mavenCentral()
     maven { url "https://github.com/asamgir/maven-repository/raw/master" }
@@ -109,6 +133,221 @@ task compile (dependsOn:'compile') {
 task compileTestCases (dependsOn:'test') {  
 }
 
+task installable_build_war (dependsOn:['clean_build','unpack_csm_war','common_build_war']) {
+}
+
+task copy_bulkoperator_zip_props (type: Copy) {
+    from ('./') {
+        include 'README.txt'
+        include 'bulkoperator.zip'
+        include 'bulkOperation.properties'    
+    }       
+    into 'OpenSpecimen_Installable/'
+}
+
+task copy_Bulk_operations_jars (type: Copy) {
+    from (configurations.runtime) {
+        include 'DynamicExtensions.jar'
+    }
+    into 'OpenSpecimen_Installable/modules/bulk_operations/lib'
+}
+
+task copy_bulkOperation_files (type: Copy) {
+    from ('./') {
+        include 'bulkOperation.properties'
+        from ('BulkOperations/conf') {
+            include 'log4j.properties'
+        }
+        include '*.xml'
+    }
+    into 'OpenSpecimen_Installable/modules/bulk_operations/conf'
+}
+
+task copy_forms_queries(type: Copy) {
+    from ('./') {
+        include 'aq-forms/**'
+        include 'aq-queries/**'
+        include 'spe-forms/**'
+    }    
+    into 'OpenSpecimen_Installable/'
+}
+
+task copy_modules (type: Copy) {
+    from ('./') {
+        include 'bulk_operations_upload/**'
+        include 'report_scripts/**'
+        include 'insert_dashboard_queries/**'
+    }
+    into 'OpenSpecimen_Installable/modules/'
+}
+
+task copy_csv (type: Copy) {
+    from ('./') {
+        include 'Default_cp_And_System_dashboard.csv'
+    }
+    into 'OpenSpecimen_Installable/'
+}
+
+task copy_images (type: Copy) {
+    from ('images/') {
+        include 'defauleLogo.png'
+        include 'InstitutionLogo.gif'
+    }
+    into 'OpenSpecimen_Installable/modules/caTissue/images'
+    
+    from ('images/uIEnhancementImages') {
+        include 'siteman_logo.gif'
+    }
+    into 'OpenSpecimen_Installable/modules/caTissue/images/uIEnhancementImages'
+}
+
+task copy_catissuecore_war (type: Copy) {
+    from ('build/libs') {
+        include 'openspecimen.war'
+    }
+    into 'OpenSpecimen_Installable/modules/caTissue/lib'
+    
+    from ('extra_lib') {
+        include 'ant-contrib.jar'
+    }
+    into 'OpenSpecimen_Installable/modules/caTissue/lib'
+    
+    from ('lib') {
+        include 'dom4j-1.6.jar'
+        include 'j2ee.jar'
+        include 'log4j.jar'
+        include 'liquibase.jar'
+    }
+    into 'OpenSpecimen_Installable/modules/caTissue/lib'
+    
+    from ('WEB-INF/lib') {
+    
+    }
+    into 'OpenSpecimen_Installable/modules/caTissue/lib'
+}
+
+task copy_catissuecore_properties (type: Copy) {
+    from ('./') {
+        include 'catissuecore-properties/**'
+        include 'performance.properties'
+        include 'login-config.xml'
+        include 'properties-service.xml'
+        include 'taggedvalues.xml'
+        include 'caTissueCdmsIntegration.properties'
+        include 'catissuecore-ds.xml'
+        include 'Sample-login-config.xml'
+        include 'Sample-properties-service.xml'
+    }
+    into 'OpenSpecimen_Installable/modules/caTissue/conf'
+    
+    from ('WEB-INF/resources') {
+        include 'ng-email-templates/**'
+    }
+    into 'OpenSpecimen_Installable/modules/caTissue/conf/catissuecore-properties'
+    
+    from ('./') {
+        include 'allTokens.properties'
+        include 'build-properties.xml'
+        include 'mail.txt'
+    }
+    into 'OpenSpecimen_Installable/modules/caTissue/conf'
+    
+    from ('./') {
+        include 'caTissueInstall.properties'
+        include 'MANIFEST.MF'
+        include 'deploy_zip.xml'    
+    }
+    into 'OpenSpecimen_Installable'
+    rename { String fileName -> fileName.replace('deploy_zip.xml', 'build.xml')
+    }
+}
+
+task copy_custom_impl_lib (type: Copy) {
+    //Default_label_barcode_gen.jar is required ?
+    //label_barcode_gen_client.jar ?
+    
+    from ('WEB-INF/lib') {
+        include 'IDPAuthenticationManager0_0.jar'
+    }    
+    into 'OpenSpecimen_Installable/modules/custom_impl_lib'
+}
+
+task copy_de_jars (type: Copy) {
+    from('./') {
+        include 'dynamicextensions.zip'
+    }
+    into 'OpenSpecimen_Installable/modules/dynamic_extensions/lib'
+    
+    from ('WEB-INF/lib') {
+        include 'DynamicExtensions.jar'
+    }
+    into 'OpenSpecimen_Installable/modules/dynamic_extensions/lib'
+    
+    from ('./') {
+        include 'DEDeploy_zip.xml'
+    }
+    into 'OpenSpecimen_Installable/modules/dynamic_extensions/conf'
+    rename { String fileName -> fileName.replace('DEDeploy_zip.xml', 'DEDeploy.xml')}
+}
+
+task copy_idp (type: Copy) {
+    from ('./') {
+        include 'idp'
+    }
+    into 'OpenSpecimen_Installable/modules/identity_provider_support/conf'
+}
+
+task copy_print_web_service (type: Copy) {
+    from ('./') {
+        include 'printservice_module.jar'
+        include 'printservice_client.jar'
+        include 'caTissuePrintWebService.war'
+    }
+    into 'OpenSpecimen_Installable/modules/print_web_service/lib'
+    
+    from ('WEB-INF/lib') {
+        include 'PrintCatissueCore_Client.jar'
+    }
+    into 'OpenSpecimen_Installable/modules/print_web_service/lib'
+}
+
+task copy_taggedvalues_file (type: Copy) {
+    from('./') {
+        include 'taggedvalues.xml'
+    }
+    into 'OpenSpecimen_Installable/modules/query/conf'
+}
+
+task copy_sql_dir (type: Copy) {
+    from ('./') {
+        include 'SQL/**'
+        exclude '**/Permissible_values/*.ctl'
+    }
+    into 'OpenSpecimen_Installable'
+}
+
+task create_installable (type: Copy) {
+    copy_bulkoperator_zip_props.execute()
+    copy_Bulk_operations_jars.execute()
+    copy_bulkOperation_files.execute()
+    copy_forms_queries.execute()
+    copy_modules.execute()
+    copy_csv.execute()
+    copy_images.execute()
+    copy_catissuecore_war.execute()
+    copy_catissuecore_properties.execute()
+    copy_custom_impl_lib.execute()
+    copy_de_jars.execute()
+    copy_idp.execute()
+    copy_print_web_service.execute()
+    copy_sql_dir.execute()
+}
+
+task create_zip (dependsOn: ['installable_build_war','create_installable'], type:Zip) {
+    from ('OpenSpecimen_Installable') {
+    }
+}
+
 dependencies {
     providedCompile group: 'mysql', name: 'mysql-connector-java', version: '5.0.8'
     providedCompile group: 'kspl.os', name: 'j2ee', version: '2.0'
@@ -159,10 +398,10 @@ dependencies {
     compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
     compile group: 'commons-codec', name: 'commons-codec', version: '1.3'
     compile group: 'net.sf.ehcache', name: 'ehcache', version: '1.2.2'
+    compile group: 'castor', name: 'castor', version:'0.9.9'
     compile group: 'kspl.os', name: 'AdvanceQuery', version: '1.0'
     compile group: 'kspl.os', name: 'axis', version: '2.0'   
     compile group: 'kspl.os', name: 'bulkoperator', version: '2.0'
-    compile group: 'castor', name: 'castor', version:'0.9.9'
     compile group: 'kspl.os', name: 'caTissueCdmsIntegration', version: '2.0'
     compile group: 'kspl.os', name: 'catissuecore-client', version: '2.0'
     compile group: 'kspl.os', name: 'cglib', version: '2.0'

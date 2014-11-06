@@ -1,0 +1,6 @@
+defaultTasks 'clean', 'build'
+
+task deploy(dependsOn: 'build') << {
+    println 'Deploing on the test environment...'
+}
+

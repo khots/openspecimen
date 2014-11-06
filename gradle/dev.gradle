@@ -1,0 +1,7 @@
+apply plugin: 'eclipse'
+
+defaultTasks 'clean', 'build', 'eclipse'
+
+task release(dependsOn: 'build') << {
+    println 'Preparing the release...'
+}

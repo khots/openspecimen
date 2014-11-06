@@ -1,0 +1,6 @@
+defaultTasks 'build'
+
+task deploy(dependsOn: 'build') << {
+    println 'Deploying on the production environment...'
+}
+
