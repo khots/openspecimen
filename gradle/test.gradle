@@ -1,6 +1,6 @@
-defaultTasks 'clean', 'build'
+defaultTasks 'build_war',
 
-task deploy(dependsOn: 'build') << {
+task deploy(dependsOn: 'build_war') << {
     println 'Deploing on the test environment...'
 }
 

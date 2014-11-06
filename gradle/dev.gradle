@@ -1,7 +1,5 @@
-apply plugin: 'eclipse'
+defaultTasks 'build_war'
 
-defaultTasks 'clean', 'build', 'eclipse'
-
-task release(dependsOn: 'build') << {
+task release(dependsOn: 'build_war') << {
     println 'Preparing the release...'
 }
