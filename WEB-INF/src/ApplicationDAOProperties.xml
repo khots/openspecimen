@@ -27,7 +27,7 @@
 			</DefaultDAO>
 		
 			<JDBCDAO>
-				<DBPropertyFile name ="MysqlDataSourceDAOProperties.xml"/>
+				<DBPropertyFile name ="OracleDataSourceDAOProperties.xml"/>
 			</JDBCDAO>
 			
 		</DAOFactory>
