@@ -2572,6 +2572,11 @@ PUBLIC
 			<forward name="orderDetails" path="/RequestDetails.do" />
 		</action>
 
+
+		<action path="/SpecimenListGridAction" 
+			type="edu.wustl.catissuecore.action.SpecimenListGridAction" scope="request" validate="false">
+        	</action>		
+
 		<action path="/NewSpecimenEdit" type="edu.wustl.common.action.CommonAddEditAction"
 			name="newSpecimenForm" validate="true"
 			input="/NewSpecimen.do?operation=edit&amp;pageOf=pageOfNewSpecimen&amp;menuSelected=15&amp;showConsents=yes&amp;tableId4=disable"
