@@ -65,7 +65,7 @@ task unpack_csm_war (type: Copy) {
 }
 
 task create_war (type: War) {
-    archiveName = 'openspecimen.war'
+    archiveName = 'catissuecore.war'
   
     //classpath 'build/libs/caTissueCommonJar.jar'
            
@@ -136,13 +136,41 @@ task compileTestCases (dependsOn:'test') {
 task installable_build_war (dependsOn:['clean_build','unpack_csm_war','common_build_war']) {
 }
 
-task copy_bulkoperator_zip_props (type: Copy) {
+task create_client_jar (type: Jar) {
+    archiveName = 'catissuecore.jar'
     from ('./') {
-        include 'README.txt'
-        include 'bulkoperator.zip'
-        include 'bulkOperation.properties'    
-    }       
+        include 'src/main/java/edu/wustl/catissuecore/domain/**'
+        include 'src/main/java/edu/wustl/catissuecore/actionForm/**'
+        include 'src/main/java/edu/wustl/catissuecore/util/**'
+        include 'src/main/java/edu/wustl/catissuecore/client/**'
+        include 'src/main/java/edu/wustl/catissuecore/bean/**'
+        include 'src/main/java/edu/wustl/catissuecore/namegenerator/**'
+        include 'src/main/java/edu/wustl/catissuecore/caties/**'
+        include 'src/main/java/edu/wustl/catissuecore/hbm/**'
+        include 'src/main/java/edu/wustl/catissuecore/bizlogic/**'
+        include 'src/main/java/krishagni/catissueplus/dto'
+    }
+    
+}
+
+task copy_files_into_root_dir (type: Copy) {
+    from ('./') {
+        include 'deploy_zip.xml'
+        include 'caTissueInstall.properties'
+        include 'Default_cp_And_System_dashboard.csv'
+        include 'MANIFEST.MF'
+    } 
     into 'OpenSpecimen_Installable/'
+    rename { String fileName -> fileName.replace('deploy_zip.xml', 'build.xml')}
+}
+
+task copy_app_resource (type: Copy) {
+    from ('src/main/java') {
+        include 'ApplicationResources_en_AU.properties'
+        include 'ApplicationResources_en_GB.properties'
+        include 'ApplicationResources_fr_CH.properties'
+    }
+    into 'OpenSpecimen_Installable/modules/appResources'
 }
 
 task copy_Bulk_operations_jars (type: Copy) {
@@ -153,14 +181,16 @@ task copy_Bulk_operations_jars (type: Copy) {
 }
 
 task copy_bulkOperation_files (type: Copy) {
-    from ('./') {
-        include 'bulkOperation.properties'
-        from ('BulkOperations/conf') {
-            include 'log4j.properties'
-        }
-        include '*.xml'
+    from ('./BulkOperations/conf') {
     }
     into 'OpenSpecimen_Installable/modules/bulk_operations/conf'
+}
+
+task copy_bulkOperation_zip (type: Copy) {
+    from ('./') {
+        include 'bulkoperator.zip'
+    }
+    into 'OpenSpecimen_Installable/modules/bulk_operations/lib'
 }
 
 task copy_forms_queries(type: Copy) {
@@ -194,95 +224,49 @@ task copy_images (type: Copy) {
         include 'InstitutionLogo.gif'
     }
     into 'OpenSpecimen_Installable/modules/caTissue/images'
-    
-    from ('images/uIEnhancementImages') {
-        include 'siteman_logo.gif'
-    }
-    into 'OpenSpecimen_Installable/modules/caTissue/images/uIEnhancementImages'
 }
 
-task copy_catissuecore_war (type: Copy) {
-    from ('build/libs') {
-        include 'openspecimen.war'
+task copy_catissuecore_war_in_catissue (type: Copy) {
+    from ('./build/libs') {
+        include 'catissuecore.jar'
     }
     into 'OpenSpecimen_Installable/modules/caTissue/lib'
-    
-    from ('extra_lib') {
-        include 'ant-contrib.jar'
-    }
-    into 'OpenSpecimen_Installable/modules/caTissue/lib'
-    
-    from ('lib') {
-        include 'dom4j-1.6.jar'
-        include 'j2ee.jar'
-        include 'log4j.jar'
-        include 'liquibase.jar'
-    }
-    into 'OpenSpecimen_Installable/modules/caTissue/lib'
-    
-    from ('WEB-INF/lib') {
-    
-    }
-    into 'OpenSpecimen_Installable/modules/caTissue/lib'
+  
 }
 
 task copy_catissuecore_properties (type: Copy) {
     from ('./') {
         include 'catissuecore-properties/**'
+        include 'allTokens.properties'
         include 'performance.properties'
         include 'login-config.xml'
         include 'properties-service.xml'
         include 'taggedvalues.xml'
         include 'caTissueCdmsIntegration.properties'
         include 'catissuecore-ds.xml'
+        include 'mail.txt'
         include 'Sample-login-config.xml'
         include 'Sample-properties-service.xml'
     }
-    into 'OpenSpecimen_Installable/modules/caTissue/conf'
-    
+    into 'OpenSpecimen_Installable/modules/caTissue/conf/'
+}
+
+task copy_ng_email_templates (type: Copy){
     from ('WEB-INF/resources') {
         include 'ng-email-templates/**'
     }
-    into 'OpenSpecimen_Installable/modules/caTissue/conf/catissuecore-properties'
+    into 'OpenSpecimen_Installable/modules/caTissue/conf/catissuecore-properties/'
     
-    from ('./') {
-        include 'allTokens.properties'
-        include 'build-properties.xml'
-        include 'mail.txt'
-    }
-    into 'OpenSpecimen_Installable/modules/caTissue/conf'
-    
-    from ('./') {
-        include 'caTissueInstall.properties'
-        include 'MANIFEST.MF'
-        include 'deploy_zip.xml'    
-    }
-    into 'OpenSpecimen_Installable'
-    rename { String fileName -> fileName.replace('deploy_zip.xml', 'build.xml')
-    }
 }
 
-task copy_custom_impl_lib (type: Copy) {
-    //Default_label_barcode_gen.jar is required ?
-    //label_barcode_gen_client.jar ?
-    
-    from ('WEB-INF/lib') {
-        include 'IDPAuthenticationManager0_0.jar'
-    }    
-    into 'OpenSpecimen_Installable/modules/custom_impl_lib'
-}
-
-task copy_de_jars (type: Copy) {
+task copy_de_zip (type: Copy) {
     from('./') {
         include 'dynamicextensions.zip'
     }
     into 'OpenSpecimen_Installable/modules/dynamic_extensions/lib'
-    
-    from ('WEB-INF/lib') {
-        include 'DynamicExtensions.jar'
-    }
-    into 'OpenSpecimen_Installable/modules/dynamic_extensions/lib'
-    
+}
+
+task copy_de_deploy(type: Copy) {
     from ('./') {
         include 'DEDeploy_zip.xml'
     }
@@ -291,8 +275,8 @@ task copy_de_jars (type: Copy) {
 }
 
 task copy_idp (type: Copy) {
-    from ('./') {
-        include 'idp'
+    from ('./idp') {
+        include '**.*'
     }
     into 'OpenSpecimen_Installable/modules/identity_provider_support/conf'
 }
@@ -302,11 +286,7 @@ task copy_print_web_service (type: Copy) {
         include 'printservice_module.jar'
         include 'printservice_client.jar'
         include 'caTissuePrintWebService.war'
-    }
-    into 'OpenSpecimen_Installable/modules/print_web_service/lib'
-    
-    from ('WEB-INF/lib') {
-        include 'PrintCatissueCore_Client.jar'
+        
     }
     into 'OpenSpecimen_Installable/modules/print_web_service/lib'
 }
@@ -326,30 +306,111 @@ task copy_sql_dir (type: Copy) {
     into 'OpenSpecimen_Installable'
 }
 
-task create_installable (type: Copy) {
-    copy_bulkoperator_zip_props.execute()
-    copy_Bulk_operations_jars.execute()
-    copy_bulkOperation_files.execute()
-    copy_forms_queries.execute()
-    copy_modules.execute()
-    copy_csv.execute()
-    copy_images.execute()
-    copy_catissuecore_war.execute()
-    copy_catissuecore_properties.execute()
-    copy_custom_impl_lib.execute()
-    copy_de_jars.execute()
-    copy_idp.execute()
-    copy_print_web_service.execute()
-    copy_sql_dir.execute()
+task copy_custom_impl_lib (type: Copy) {
+    from ('./') {
+        include 'Default_label_barcode_gen.jar'
+        include 'label_barcode_gen_client.jar'
+        from ('custom_impl_lib') {
+            include 'IDPAuthenticationManager0_0.jar'
+        }
+    }
+    into 'OpenSpecimen_Installable/modules/custom_impl_lib'
 }
 
-task create_zip (dependsOn: ['installable_build_war','create_installable'], type:Zip) {
-    from ('OpenSpecimen_Installable') {
+task copy_catissuecore_war_in_BO (type: Copy) {
+    from ('./build/libs') {
+        include 'catissuecore.jar'
     }
+    into 'OpenSpecimen_Installable/modules/bulk_operations/lib'
+}
+
+task create_installable (type: Copy) {
+  
+    copy_files_into_root_dir.execute()
+    copy_Bulk_operations_jars.execute()
+    copy_bulkOperation_files.execute()
+    copy_bulkOperation_zip.execute()
+    copy_forms_queries.execute()
+    copy_app_resource.execute()
+    copy_modules.execute()
+    copy_custom_impl_lib.execute()
+    copy_csv.execute()
+    copy_images.execute()
+    copy_catissuecore_properties.execute()
+    copy_ng_email_templates.execute()
+    copy_de_zip.execute()
+    copy_de_deploy.execute()
+    copy_idp.execute()
+    copy_taggedvalues_file.execute()
+    copy_print_web_service.execute()
+    copy_sql_dir.execute()
+    copy_catissuecore_war_in_BO.execute();
+    copy_catissuecore_war_in_catissue.execute();
+    
+}
+
+
+task libs(type: Sync) {
+    from (configurations.compile) {
+        include 'bulkoperator-2.0.jar'
+        include 'DynamicExtensions*.jar'
+        include 'castor-0.9.9.jar'
+        include 'commons-logging-1.0.jar'
+        include 'commons-codec*.jar'
+        include 'hibernate3-3.0.jar'
+        include 'opencsv-1.8.jar'
+        include 'struts-2.0.jar'
+        include 'commons-beanutils-1.8.3-1.0.jar'
+        include 'commons-digester*.jar'
+        include 'commons-beanutils*.jar'
+    }
+    into 'OpenSpecimen_Installable/modules/bulk_operations/lib'
+ }
+
+task extra_libs (type: Sync){
+    from (configurations.compile) {
+        include 'DynamicExtensions-1.0.jar'
+        include 'commonpackage-1.3.1.jar'
+        include 'DAO-1.1.9.7.jar'
+        include 'dom4j-1.6.jar'
+        include 'j2ee-2.0.jar'
+        include 'liquibase-2.0.jar'
+        include 'log4j-2.0.jar'
+        include 'mysql-connector-java.5.0.8.jar'
+        include 'ojdbc14-2.0.jar'
+        include 'ParticipantManager-2.0.jar'
+        include 'securityManager-1.1.7.2.jar'
+        include 'washu-commons-1.2.w1.jar'
+        include 'ant-contrib-2.0.jar'
+    }
+    into 'OpenSpecimen_Installable/modules/caTissue/lib'
+}
+
+task de_jar(type: Sync) {
+    from (configurations.compile) {
+        include 'DynamicExtensions-1.0.jar'
+    }
+    into 'OpenSpecimen_Installable/modules/dynamic_extensions/lib'
+}
+
+task printCatissuecore_jar(type: Sync) {
+    from (configurations.compile) {
+        include 'PrintCatissueCore_Client-2.0.jar'
+    }
+    into 'OpenSpecimen_Installable/modules/dynamic_extensions/lib'
+}
+
+create_client_jar.shouldRunAfter installable_build_war
+create_installable.shouldRunAfter create_client_jar 
+
+task create_zip (dependsOn: ['installable_build_war','create_client_jar','create_installable','libs','extra_libs','de_jar','printCatissuecore_jar'], type:Zip) {
+    from 'OpenSpecimen_Installable'
 }
 
 dependencies {
-    providedCompile group: 'mysql', name: 'mysql-connector-java', version: '5.0.8'
+    compile group: 'kspl.os', name: 'dom4j', version: '1.6'
+    compile group: 'kspl.os', name: 'liquibase', version: '2.0'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.0.8'
     providedCompile group: 'kspl.os', name: 'j2ee', version: '2.0'
     providedCompile group: 'javax', name:'javaee-endorsed-api', version:'6.0'
     providedCompile group: 'ant', name: 'ant-jakarta-oro', version: '1.6'
@@ -362,7 +423,8 @@ dependencies {
     providedCompile group: 'kspl.os', name: 'backport-util-concurrent', version: '2.0'
     providedCompile group: 'kspl.os', name: 'BulkEMPIOperations', version: '2.0'
     providedCompile group: 'kspl.os', name: 'commons-logging', version: '1.0'
- 
+    
+    compile group: 'kspl.os',name: 'ant-contrib',version: '2.0' 
     compile group: 'com.google.code.gson', name: 'gson', version: '2.2.2'
     compile group: 'org.codehaus.jackson', name: 'jackson-core-asl', version: '1.9.2'
     compile group: 'org.codehaus.jackson', name: 'jackson-jaxrs', version: '1.9.2'
