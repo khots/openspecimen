@@ -1929,6 +1929,12 @@ PUBLIC
 			<forward name="success" path=".catissuecore.reportProblemDef" />
 			<forward name="failure" path=".catissuecore.reportProblemDef" />
 		</action>
+		
+		
+		
+		<action path="/ScanContainer"
+			scope="request" forward=".catissuecore.scanContainer">
+		</action>
 
 		<action path="/AdminReportProblem"
 			type="edu.wustl.catissuecore.action.ReportProblemAction" scope="request">

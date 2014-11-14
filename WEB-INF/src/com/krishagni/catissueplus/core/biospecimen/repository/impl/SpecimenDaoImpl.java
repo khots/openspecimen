@@ -78,6 +78,15 @@ public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDa
 		return results.isEmpty()? null: results.get(0);
 	}
 	
+	@SuppressWarnings("unchecked")
+ @Override
+ public Specimen getSpecimenByBarcode(String barcode) {
+  Query query = sessionFactory.getCurrentSession().getNamedQuery(GET_SPECIMEN_BY_BARCODE);
+  query.setString("barcode", barcode);
+  List<Specimen> results = query.list();
+  return results.isEmpty()? null: results.get(0);
+ }
+	
 	@Override
 	public boolean isLabelUnique(String label) {
 		Query query = sessionFactory.getCurrentSession().getNamedQuery(GET_SPECIMEN_BY_LABEL);
@@ -149,6 +158,7 @@ public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDa
 	private static final String GET_SPECIMEN_BY_LABEL = FQN +".getSpecimenByLabel";
 	
 	private static final String GET_SPECIMENS_BY_LABEL = FQN + ".getSpecimensByLabel";
+	private static final String GET_SPECIMEN_BY_BARCODE = FQN+".getSpecimenByBarcode";
 
 
 }

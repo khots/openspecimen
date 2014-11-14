@@ -41,6 +41,10 @@
 		<put name="content" value="/pages/content/common/ReportProblem.jsp" />
 	</definition>
 
+	<definition name=".catissuecore.scanContainer" extends=".catissuecore.homePageDef">
+		<put name="content" value="/pages/content/manageAdministrativeData/scanContainer.jsp" />
+	</definition>
+
 	<definition name=".catissuecore.reportProblemSuccessDef" extends=".catissuecore.homePageDef">
 		<put name="content" value="/pages/content/common/success.jsp" />
 	</definition>
