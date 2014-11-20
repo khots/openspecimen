@@ -114,6 +114,15 @@ task create_war (type: War) {
         exclude 'Criteria.jsp'
         exclude '**/WEB-INF/classes/ApplicationSecurityConfig.xml'
     }
+    
+    from ('src/main/java') {
+        exclude 'com/**'
+        exclude 'edu/**'
+        exclude 'krishagni/**'
+        
+        into 'WEB-INF/classes'
+    }
+    
 }
 
 task common_build_war (dependsOn:'create_war') {
@@ -362,6 +371,7 @@ task copy_catissuecore_properties (type: Copy) {
         include 'mail.txt'
         include 'Sample-login-config.xml'
         include 'Sample-properties-service.xml'
+        include 'build-properties.xml'
     }
     into 'OpenSpecimen_Installable/modules/caTissue/conf/'
 }
@@ -442,25 +452,24 @@ task copy_catissuecore_jar_in_BO (type: Copy) {
 task create_installable (type: Copy) {
   
     copy_files_into_root_dir.execute()
+    copy_modules.execute()
     copy_Bulk_operations_jars.execute()
     copy_bulkOperation_files.execute()
-    copy_bulkOperation_zip.execute()
+    //copy_bulkOperation_zip.execute()
     copy_forms_queries.execute()
     copy_app_resource.execute()
-    copy_modules.execute()
     copy_custom_impl_lib.execute()
     copy_csv.execute()
     copy_images.execute()
     copy_catissuecore_properties.execute()
     copy_ng_email_templates.execute()
-    copy_de_zip.execute()
     copy_de_deploy.execute()
     copy_idp.execute()
     copy_taggedvalues_file.execute()
     copy_print_web_service.execute()
     copy_sql_dir.execute()
     copy_catissuecore_jar_in_BO.execute();
-    copy_catissuecore_war_in_catissue.execute();    
+    //copy_catissuecore_war_in_catissue.execute();
 }
 
 task libs(type: Sync) {
@@ -489,7 +498,7 @@ task extra_libs (type: Sync){
         include 'j2ee-2.0.jar'
         include 'liquibase-2.0.jar'
         include 'log4j-2.0.jar'
-        include 'mysql-connector-java.5.0.8.jar'
+        include 'mysql-connector-java-5.0.8.jar'
         include 'ojdbc14-2.0.jar'
         include 'ParticipantManager-2.0.jar'
         include 'securityManager-1.1.7.2.jar'
@@ -515,8 +524,10 @@ task printCatissuecore_jar(type: Sync) {
 
 create_client_jar.shouldRunAfter installable_build_war
 create_installable.shouldRunAfter create_client_jar 
-
-task create_zip (dependsOn: ['installable_build_war','create_client_jar','create_installable','libs','extra_libs','de_jar','printCatissuecore_jar'], type:Zip) {
+copy_de_zip.shouldRunAfter de_jar
+copy_catissuecore_war_in_catissue.shouldRunAfter extra_libs
+copy_bulkOperation_zip.shouldRunAfter libs
+task create_zip (dependsOn: ['installable_build_war','create_client_jar','create_installable','libs','extra_libs','de_jar','copy_de_zip','copy_catissuecore_war_in_catissue','copy_bulkOperation_zip'], type:Zip) {
     from 'OpenSpecimen_Installable'
     destinationDir(file('./'))
 }
