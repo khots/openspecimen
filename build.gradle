@@ -105,22 +105,40 @@ task create_war (type: War) {
         include '**/index.html'
         include '**/script.js'
         include '**/styleSheet.css'
-    
+         
         exclude '**/WEB-INF/web.xml'
         exclude '**/WEB-INF/classes/edu/wustl/catissuecore/domain/**'
-        exclude '**/WEB-INF/lib/**'        
+        exclude '**/WEB-INF/lib/**'
         exclude '**/META-INF/**'
         exclude 'Happy.jsp'
         exclude 'Criteria.jsp'
         exclude '**/WEB-INF/classes/ApplicationSecurityConfig.xml'
+        exclude '**/WEB-INF/classes/ehcache.xml'
+        exclude '**/WEB-INF/applicationContext.xml'
     }
     
-    from ('src/main/java') {
-        exclude 'com/**'
-        exclude 'edu/**'
-        exclude 'krishagni/**'
+    from ('build/tmp/catissuecorecsm/WEB-INF/lib') {
+        include 'jboss-client.jar'
+    }
+    
+    from ('src/main/java/krishagni/catissueplus') {
+        include 'hbm/**'
         
-        into 'WEB-INF/classes'
+        into 'WEB-INF/classes/krishagni/catissueplus'
+    }
+    
+    from ('src/main/java/com/krishagni/rbac') {
+        
+        include 'resources/**'
+        
+        into 'WEB-INF/classes/com/krishagni/rbac'
+    }
+    
+    from ('src/main/java/edu/wustl/catissuecore/') {
+        
+        include 'hbm/**'
+        
+        into 'WEB-INF/classes/edu/wustl/catissuecore/'
     }
     
 }
@@ -142,7 +160,7 @@ task compileTestCases (dependsOn:'test') {
 dependencies {
     providedCompile group: 'kspl.os', name: 'j2ee', version: '2.0'
     providedCompile group: 'javax', name:'javaee-endorsed-api', version:'6.0'
-    providedCompile group: 'ant', name: 'ant-jakarta-oro', version: '1.6'
+    
     providedCompile group: 'com.sun.jersey', name: 'jersey-client', version: '1.17'
     providedCompile group: 'com.sun.jersey', name: 'jersey-core', version: '1.17'
     providedCompile group: 'com.sun.jersey', name: 'jersey-json', version: '1.17'
@@ -152,10 +170,14 @@ dependencies {
     providedCompile group: 'kspl.os', name: 'backport-util-concurrent', version: '2.0'
     providedCompile group: 'kspl.os', name: 'BulkEMPIOperations', version: '2.0'
     providedCompile group: 'kspl.os', name: 'commons-logging', version: '1.0'
+    providedCompile group: 'kspl.os', name: 'servlet', version: '2.0'
+    providedCompile group: 'mysql', name: 'mysql-connector-java', version: '5.0.8'
+    providedCompile group: 'kspl.os', name: 'ojdbc14', version: '2.0'
     
-    compile group: 'kspl.os', name: 'dom4j', version: '1.6'
-    compile group: 'kspl.os', name: 'liquibase', version: '2.0'
-    compile group: 'mysql', name: 'mysql-connector-java', version: '5.0.8'
+    providedCompile group: 'kspl.os', name: 'dom4j', version: '1.6'
+    providedCompile group: 'kspl.os', name: 'liquibase', version: '2.0'
+    
+    compile group: 'ant', name: 'ant-jakarta-oro', version: '1.6'
     compile group: 'kspl.os',name: 'ant-contrib',version: '2.0' 
     compile group: 'com.google.code.gson', name: 'gson', version: '2.2.2'
     compile group: 'org.codehaus.jackson', name: 'jackson-core-asl', version: '1.9.2'
@@ -232,13 +254,12 @@ dependencies {
     compile group: 'kspl.os', name: 'jstl', version: '2.0'
     compile group: 'kspl.os', name: 'mail', version: '2.0'
     compile group: 'kspl.os', name: 'log4j', version: '2.0'
-    compile group: 'kspl.os', name: 'ojdbc14', version: '2.0'
     compile group: 'kspl.os', name: 'ParticipantManager', version: '2.0'
     compile group: 'kspl.os', name: 'PrintCatissueCore_Client', version: '2.0'
     compile group: 'kspl.os', name: 'printservice_client', version: '2.0'
     compile group: 'kspl.os', name: 'printservice_module', version: '2.0'
     compile group: 'kspl.os', name: 'quartz', version: '2.0'
-    compile group: 'kspl.os', name: 'servlet', version: '2.0'
+    
     compile group: 'kspl.os', name: 'Stinger', version: '2.6.1'
     compile group: 'kspl.os', name: 'SimpleQuery', version: '1.1.9.2.2'
     compile group: 'kspl.os', name: 'securityManager', version: '1.1.7.2'
