@@ -44,12 +44,6 @@ jar {
     version =  '2.1'
 }
 
-//jar {
-  //  baseName = 'caTissueCommonJar'
-  //  version =  ''
-  //  from sourceSets.main.output.classesDir 
-//}
-
 task clean_build(type: Delete) {
     delete './build'
 }
@@ -123,13 +117,7 @@ task create_war (type: War) {
         
         into 'WEB-INF/lib'
     }
-    
-   // from ('WEB-INF/') {
-   //     include 'applicationContext.xml'
-        
-   //     into 'WEB-INF/'
-   // }
-    
+       
     from ('src/main/java/krishagni/catissueplus') {
         include 'hbm/**'
         
@@ -178,40 +166,29 @@ task compileTestCases (dependsOn:'test') {
 }
 
 dependencies {
-    providedCompile group: 'kspl.os', name: 'j2ee', version: '2.0'
     providedCompile group: 'javax', name:'javaee-endorsed-api', version:'6.0'
-    
     providedCompile group: 'com.sun.jersey', name: 'jersey-client', version: '1.17'
     providedCompile group: 'com.sun.jersey', name: 'jersey-core', version: '1.17'
     providedCompile group: 'com.sun.jersey', name: 'jersey-json', version: '1.17'
     providedCompile group: 'com.sun.jersey', name: 'jersey-server', version: '1.17'
     providedCompile group: 'com.sun.jersey', name: 'jersey-servlet', version: '1.17'       
     providedCompile group: 'org.mockito', name:'mockito-all', version: '1.9.5'
-    providedCompile group: 'kspl.os', name: 'backport-util-concurrent', version: '2.0'
+    providedCompile group: 'mysql', name: 'mysql-connector-java', version: '5.0.8'
     providedCompile group: 'kspl.os', name: 'BulkEMPIOperations', version: '2.0'
     providedCompile group: 'kspl.os', name: 'commons-logging', version: '1.0'
     providedCompile group: 'kspl.os', name: 'servlet', version: '2.0'
-    providedCompile group: 'mysql', name: 'mysql-connector-java', version: '5.0.8'
     providedCompile group: 'kspl.os', name: 'ojdbc14', version: '2.0'
-    
+    providedCompile group: 'kspl.os', name: 'cobertura', version: '2.0'
     providedCompile group: 'kspl.os', name: 'dom4j', version: '1.6'
     providedCompile group: 'kspl.os', name: 'liquibase', version: '2.0'
+    providedCompile group: 'kspl.os', name: 'j2ee', version: '2.0'
     
-    compile group: 'ant', name: 'ant-jakarta-oro', version: '1.6'
-    compile group: 'kspl.os',name: 'ant-contrib',version: '2.0' 
+    compile group: 'ant', name: 'ant-jakarta-oro', version: '1.6' 
     compile group: 'com.google.code.gson', name: 'gson', version: '2.2.2'
-  
-    compile group: 'org.codehaus.jackson', name: 'jackson-core-asl', version: '1.9.2'
-    compile group: 'org.codehaus.jackson', name: 'jackson-jaxrs', version: '1.9.2'
-    compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: '1.9.2'
-    compile group: 'org.codehaus.jackson', name: 'jackson-xc', version: '1.9.2'
-    
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.2.0'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.2.0'
     compile group: 'com.sun.jersey', name: 'jersey-bundle', version: '1.8'
     compile group: 'aopalliance', name: 'aopalliance', version: '1.0'
-    compile group: 'asm', name: 'asm', version: '3.0'
-    compile group: 'asm', name: 'asm-tree', version: '3.0'
     compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.6.6'
     compile group: 'net.sf.kxml',name: 'kxml2-min',version: '2.3.0'
     compile group: 'org.apache.lucene', name: 'lucene-core', version: '2.0.0'
@@ -237,13 +214,22 @@ dependencies {
     compile group: 'commons-codec', name: 'commons-codec', version: '1.3'
     compile group: 'net.sf.ehcache', name: 'ehcache', version: '1.2.2'
     compile group: 'castor', name: 'castor', version:'0.9.9'
+    
+    compile group: 'kspl.os', name: 'backport-util-concurrent', version: '2.0'
+    compile group: 'kspl.os',name: 'ant-contrib',version: '2.0'
+    compile group: 'kspl.os', name: 'jackson-core-asl', version: '1.9.2'
+    compile group: 'kspl.os', name: 'jackson-jaxrs', version: '1.9.2'
+    compile group: 'kspl.os', name: 'jackson-mapper-asl', version: '1.9.2'
+    compile group: 'kspl.os', name: 'jackson-xc', version: '1.9.2'
+    compile group: 'kspl.os', name: 'jakarta-oro',version: '2.0.8'
+    compile group: 'kspl.os', name: 'asm', version: '3.0'
+    compile group: 'kspl.os', name: 'asm-tree', version: '3.0'
     compile group: 'kspl.os', name: 'AdvanceQuery', version: '1.0'
     compile group: 'kspl.os', name: 'axis', version: '2.0'   
     compile group: 'kspl.os', name: 'bulkoperator', version: '2.0'
     compile group: 'kspl.os', name: 'caTissueCdmsIntegration', version: '2.0'
     compile group: 'kspl.os', name: 'catissuecore-client', version: '2.0'
     compile group: 'kspl.os', name: 'cglib', version: '2.0'
-    compile group: 'kspl.os', name: 'cobertura', version: '2.0'
     compile group: 'kspl.os', name: 'com.ibm.mqjms', version: '2.0'
     compile group: 'kspl.os', name: 'commonpackage', version: '1.3.1'
     compile group: 'kspl.os', name: 'commons-beanutils-1.8.3', version: '1.0'
@@ -281,7 +267,6 @@ dependencies {
     compile group: 'kspl.os', name: 'printservice_client', version: '2.0'
     compile group: 'kspl.os', name: 'printservice_module', version: '2.0'
     compile group: 'kspl.os', name: 'quartz', version: '2.0'
-    
     compile group: 'kspl.os', name: 'Stinger', version: '2.6.1'
     compile group: 'kspl.os', name: 'SimpleQuery', version: '1.1.9.2.2'
     compile group: 'kspl.os', name: 'securityManager', version: '1.1.7.2'
@@ -291,7 +276,6 @@ dependencies {
     compile group: 'kspl.os', name: 'titli-washu', version: '1.0'
     compile group: 'kspl.os', name: 'velocity-dep', version: '1.5'
     compile group: 'kspl.os', name: 'washu-commons', version: '1.2.w1'
-    
     compile group: 'kspl.os', name: 'clm', version: '2.0'
     compile group: 'kspl.os', name: 'jaxen-jdom', version: '2.0'
     compile group: 'kspl.os', name: 'jdom', version: '2.0'
