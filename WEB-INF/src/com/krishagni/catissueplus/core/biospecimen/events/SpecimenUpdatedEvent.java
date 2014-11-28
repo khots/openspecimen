@@ -6,8 +6,9 @@ import com.krishagni.catissueplus.core.common.events.EventStatus;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 
 public class SpecimenUpdatedEvent extends ResponseEvent {
-
 	private Long id;
+	
+	private String label;
 
 	private SpecimenDetail specimenDetail;
 
@@ -17,6 +18,14 @@ public class SpecimenUpdatedEvent extends ResponseEvent {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 	public SpecimenDetail getSpecimenDetail() {
@@ -60,6 +69,13 @@ public class SpecimenUpdatedEvent extends ResponseEvent {
 	public static SpecimenUpdatedEvent notFound(Long id) {
 		SpecimenUpdatedEvent resp = new SpecimenUpdatedEvent();
 		resp.setId(id);
+		resp.setStatus(EventStatus.NOT_FOUND);
+		return resp;
+	}
+	
+	public static SpecimenUpdatedEvent notFound(String label) {
+		SpecimenUpdatedEvent resp = new SpecimenUpdatedEvent();
+		resp.setLabel(label);
 		resp.setStatus(EventStatus.NOT_FOUND);
 		return resp;
 	}

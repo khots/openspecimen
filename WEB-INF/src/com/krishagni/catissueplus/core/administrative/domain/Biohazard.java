@@ -21,7 +21,7 @@ public class Biohazard {
 
 	private String activityStatus;
 
-	private Set<Specimen> specimenCollection = new HashSet<Specimen>();
+	private Set<Specimen> specimens = new HashSet<Specimen>();
 
 	public Long getId() {
 		return id;
@@ -63,12 +63,12 @@ public class Biohazard {
 		this.activityStatus = activityStatus;
 	}
 
-	public Set<Specimen> getSpecimenCollection() {
-		return specimenCollection;
+	public Set<Specimen> getSpecimens() {
+		return specimens;
 	}
 
-	public void setSpecimenCollection(Set<Specimen> specimenCollection) {
-		this.specimenCollection = specimenCollection;
+	public void setSpecimens(Set<Specimen> specimens) {
+		this.specimens = specimens;
 	}
 
 	public void update(Biohazard biohazard) {
@@ -79,13 +79,41 @@ public class Biohazard {
 	}
 
 	public void delete() {
-		if (!this.getSpecimenCollection().isEmpty()) {
+		if (!this.getSpecimens().isEmpty()) {
 			throw new CatissueException(BiohazardErrorCode.ACTIVE_CHILDREN_FOUND);
 		}
 		else {
 			this.setActivityStatus(Status.ACTIVITY_STATUS_DISABLED.getStatus());
 		}
 
+	}
+	
+	@Override
+	public int hashCode() {
+		return 31 * 1 + ((id == null) ? 0 : id.hashCode());
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (obj == null) {
+			return false;
+		}
+		
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		
+		Biohazard other = (Biohazard) obj;
+		if (id == null || other.id == null) {
+			return false;
+		} else if (id.equals(other.id)) {
+			return true;
+		}
+		return false;
 	}
 
 }

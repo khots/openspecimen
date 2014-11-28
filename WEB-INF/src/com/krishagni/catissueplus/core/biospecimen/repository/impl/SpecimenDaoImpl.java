@@ -18,6 +18,11 @@ import com.krishagni.catissueplus.core.common.repository.AbstractDao;
 import com.krishagni.catissueplus.core.common.util.Status;
 
 public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDao {
+	private static final String FQN = Specimen.class.getName();
+	
+	private static final String GET_SPECIMEN_BY_LABEL = FQN + ".getSpecimenByLabel";
+	
+	private static final String GET_SPECIMEN_BY_BARCODE = FQN + ".getSpecimenByBarcode";
 	
 	@Override
 	public List<Specimen> getAllSpecimens(int startAt, int maxRecords, String... searchString) {
@@ -67,9 +72,10 @@ public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDa
 	@SuppressWarnings("unchecked")
 	@Override
 	public Specimen getSpecimenByLabel(String label) {
-		Criteria query = sessionFactory.getCurrentSession().createCriteria(Specimen.class);
-		query.add(Restrictions.eq("label", label));
-		List<Specimen> specimens = query.list();
+		List<Specimen> specimens  = sessionFactory.getCurrentSession()
+			.getNamedQuery(GET_SPECIMEN_BY_LABEL)
+			.setString("label", label)
+			.list();
 		
 		return specimens.isEmpty() ? null : specimens.iterator().next();
 	}
@@ -77,9 +83,10 @@ public class SpecimenDaoImpl extends AbstractDao<Specimen> implements SpecimenDa
 	@SuppressWarnings("unchecked")
 	@Override
 	public Specimen getSpecimenByBarcode(String barcode) {
-		Criteria query = sessionFactory.getCurrentSession().createCriteria(Specimen.class);
-		query.add(Restrictions.eq("barcode", barcode));
-		List<Specimen> specimens = query.list();
+		List<Specimen> specimens = sessionFactory.getCurrentSession()
+				.getNamedQuery(GET_SPECIMEN_BY_BARCODE)
+				.setString("barcode", barcode)
+				.list();
 		
 		return specimens.isEmpty() ? null : specimens.iterator().next();
 	}

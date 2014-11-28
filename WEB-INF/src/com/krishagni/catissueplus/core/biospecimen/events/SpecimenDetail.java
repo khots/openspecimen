@@ -329,13 +329,13 @@ public class SpecimenDetail {
 		detail.setActivityStatus(specimen.getActivityStatus());
 		detail.setAvailableQuantity(specimen.getAvailableQuantity());
 		detail.setBarcode(specimen.getBarcode());
-		detail.setBiohazardDetails(getBiohazardDetail(specimen.getBiohazardCollection()));
+		detail.setBiohazardDetails(getBiohazardDetail(specimen.getBiohazards()));
 		detail.setCollectionStatus(specimen.getCollectionStatus());
 		detail.setComment(specimen.getComment());
 		detail.setLineage(specimen.getLineage());
 		detail.setConcentrationInMicrogramPerMicroliter(specimen.getConcentrationInMicrogramPerMicroliter());
 		detail.setCreatedOn(specimen.getCreatedOn());
-		detail.setExternalIdentifierDetails(getExternalIdentifierDetails(specimen.getExternalIdentifierCollection()));
+		detail.setExternalIdentifierDetails(getExternalIdentifierDetails(specimen.getExternalIdentifiers()));
 		detail.setId(specimen.getId());
 		detail.setInitialQuantity(specimen.getInitialQuantity());
 		detail.setIsAvailable(specimen.getIsAvailable());

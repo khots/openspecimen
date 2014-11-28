@@ -2,35 +2,33 @@
 package com.krishagni.catissueplus.core.biospecimen.events;
 
 public class StorageLocation {
-
 	private String containerName;
 
-	private String positionX;
+	private String positionDimensionOne;
 
-	private String positionY;
+	private String positionDimensionTwo;
 
 	public String getContainerName() {
 		return containerName;
-	}
-
-	public String getPositionX() {
-		return positionX;
-	}
-
-	public String getPositionY() {
-		return positionY;
 	}
 
 	public void setContainerName(String containerName) {
 		this.containerName = containerName;
 	}
 
-	public void setPositionX(String positionX) {
-		this.positionX = positionX;
+	public String getPositionDimensionOne() {
+		return positionDimensionOne;
 	}
 
-	public void setPositionY(String positionY) {
-		this.positionY = positionY;
+	public void setPositionDimensionOne(String positionDimensionOne) {
+		this.positionDimensionOne = positionDimensionOne;
 	}
 
+	public String getPositionDimensionTwo() {
+		return positionDimensionTwo;
+	}
+
+	public void setPositionDimensionTwo(String positionDimensionTwo) {
+		this.positionDimensionTwo = positionDimensionTwo;
+	}
 }

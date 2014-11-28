@@ -4,73 +4,72 @@
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
     
 <hibernate-mapping auto-import="false">
-    <class
-        name="com.krishagni.catissueplus.core.administrative.domain.Biohazard"
-        table="CATISSUE_BIOHAZARD"
-		lazy="true" >
+  <class
+    name="com.krishagni.catissueplus.core.administrative.domain.Biohazard"
+    table="CATISSUE_BIOHAZARD"
+    lazy="true" >
     
-    <cache usage="read-write" />
-
-        <id
-            name="id"
-            column="IDENTIFIER"
-            type="long"
-            length="30"
-            unsaved-value="null">
+    <id
+      name="id"
+      column="IDENTIFIER"
+      type="long"
+      length="30"
+      unsaved-value="null">
             
-            <generator class="native">
-                <param name="sequence">CATISSUE_BIOHAZARD_SEQ</param>
-            </generator>
-        </id>
+      <generator class="native">
+        <param name="sequence">CATISSUE_BIOHAZARD_SEQ</param>
+      </generator>
+    </id>
 
-        <property
-            name="name"
-            type="string"
-            column="NAME"
-            length="255"
-            not-null="true"
-            unique="true"/>
+    <property
+      name="name"
+      type="string"
+      column="NAME"
+      length="255"
+      not-null="true"
+      unique="true"/>
 
-        <property
-            name="comment"
-            type="string"
-            column="COMMENTS"
-            length="500"
-        />
+    <property
+      name="comment"
+      type="string"
+      column="COMMENTS"
+      length="500"/>
 
-        <property
-            name="type"
-            type="string"
-            column="TYPE"
-            length="50"
-        />
+    <property
+      name="type"
+      type="string"
+      column="TYPE"
+      length="50"/>
         
-          <property
-            name="activityStatus"
-            type="string"
-            column="ACTIVITY_STATUS"
-            length="20"
-        />
+    <property
+      name="activityStatus"
+      type="string"
+      column="ACTIVITY_STATUS"
+      length="20"/>
 		
-		<set
-            name="specimenCollection"
-            table="CATISSUE_SPECIMEN_BIOHZ_REL">
+    <set
+      name="specimens"
+      table="CATISSUE_SPECIMEN_BIOHZ_REL">
 			      
-            <key column="BIOHAZARD_ID"/>
-            <many-to-many
-                class="com.krishagni.catissueplus.core.biospecimen.domain.Specimen"
-                column="SPECIMEN_ID"
-                />
-         </set>
+      <key column="BIOHAZARD_ID"/>
+      <many-to-many
+        class="com.krishagni.catissueplus.core.biospecimen.domain.Specimen"
+        column="SPECIMEN_ID"/>
+    </set>
+ 
 
-	 <query name="getBiohazardByName">
-    	SELECT biohazard FROM com.krishagni.catissueplus.core.administrative.domain.Biohazard biohazard 
-    	WHERE biohazard.name = :biohazardName
+    <query name="getBiohazardByName">
+      SELECT 
+        biohazard FROM com.krishagni.catissueplus.core.administrative.domain.Biohazard biohazard 
+      WHERE 
+        biohazard.name = :biohazardName
      </query>
      
-      <query name="getAllBiohazards">
-        from com.krishagni.catissueplus.core.administrative.domain.Biohazard where activityStatus != 'Disabled'
+     <query name="getAllBiohazards">
+        from 
+          com.krishagni.catissueplus.core.administrative.domain.Biohazard 
+        where 
+          activityStatus != 'Disabled'
     </query>
-    </class>
-
+  </class>
 </hibernate-mapping>

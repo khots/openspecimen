@@ -118,18 +118,18 @@ public class SpecimenServiceImpl implements SpecimenService {
 
 	@Override
 	@PlusTransactional
-	public SpecimenCreatedEvent createSpecimen(CreateSpecimenEvent event) {
+	public SpecimenCreatedEvent createSpecimen(CreateSpecimenEvent req) {
 		try {
-			Specimen specimen = specimenFactory.createSpecimen(event.getSpecimenDetail());
+			Specimen specimen = specimenFactory.createSpecimen(req.getSpecimenDetail());
 			ObjectCreationException errorHandler = new ObjectCreationException();
-			setLabel(event.getSpecimenDetail().getLabel(), specimen, errorHandler);
-			setBarcode(event.getSpecimenDetail().getBarcode(), specimen, errorHandler);
+			setLabel(req.getSpecimenDetail().getLabel(), specimen, errorHandler);
+			setBarcode(req.getSpecimenDetail().getBarcode(), specimen, errorHandler);
 			ensureUniqueBarocde(specimen.getBarcode(), errorHandler);
 			ensureUniqueLabel(specimen.getLabel(), errorHandler);
 			errorHandler.checkErrorAndThrow();
 			daoFactory.getSpecimenDao().saveOrUpdate(specimen);
-			if (event.getSpecimenDetail().isPrintLabelsEnabled()) {
-				specLabelPrinterFact.printLabel(specimen, event.getSessionDataBean().getIpAddress(), event.getSessionDataBean()
+			if (req.getSpecimenDetail().isPrintLabelsEnabled()) {
+				specLabelPrinterFact.printLabel(specimen, req.getSessionDataBean().getIpAddress(), req.getSessionDataBean()
 						.getUserName(), specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration()
 						.getCollectionProtocol().getShortTitle());
 			}
@@ -145,17 +145,73 @@ public class SpecimenServiceImpl implements SpecimenService {
 
 	@Override
 	@PlusTransactional
-	public SpecimenUpdatedEvent updateSpecimen(UpdateSpecimenEvent event) {
+	public SpecimenUpdatedEvent updateSpecimen(UpdateSpecimenEvent req) {
 		try {
-			Long specimenId = event.getId();
+			Long specimenId = req.getId();
 			Specimen oldSpecimen = daoFactory.getSpecimenDao().getSpecimen(specimenId);
 			if (oldSpecimen == null) {
 				return SpecimenUpdatedEvent.notFound(specimenId);
 			}
-			Specimen specimen = specimenFactory.createSpecimen(event.getSpecimenDetail());
+			return updateSpecimen(oldSpecimen, req.getSpecimenDetail());
+		}
+		catch (ObjectCreationException oce) {
+			return SpecimenUpdatedEvent.invalidRequest(ScgErrorCode.ERRORS.message(), oce.getErroneousFields());
+		}
+		catch (Exception ex) {
+			return SpecimenUpdatedEvent.serverError(ex);
+		}
+	}
+	
+	@Override
+	@PlusTransactional
+	public SpecimenUpdatedEvent updateSpecimenByLabel(UpdateSpecimenEvent req) {
+		try {
+			String label = req.getSpecimenDetail().getLabel();
+			Specimen oldSpecimen = daoFactory.getSpecimenDao().getSpecimenByLabel(label);
+			if (oldSpecimen == null) {
+				return SpecimenUpdatedEvent.notFound(label);
+			}
+			return updateSpecimen(oldSpecimen, req.getSpecimenDetail());
+		}
+		catch (ObjectCreationException oce) {
+			return SpecimenUpdatedEvent.invalidRequest(ScgErrorCode.ERRORS.message(), oce.getErroneousFields());
+		}
+		catch (Exception ex) {
+			return SpecimenUpdatedEvent.serverError(ex);
+		}
+	}
+
+	private SpecimenUpdatedEvent updateSpecimen(Specimen oldSpecimen, SpecimenDetail specimenDetail) {
+		Specimen specimen = specimenFactory.createSpecimen(specimenDetail);
+		ObjectCreationException errorHandler = new ObjectCreationException();
+		updateLabel(specimenDetail.getLabel(), specimen, oldSpecimen, errorHandler);
+		updateBarcode(specimenDetail.getBarcode(), specimen, oldSpecimen, errorHandler);
+		validateLabelBarcodeUnique(oldSpecimen, specimen, errorHandler);
+		errorHandler.checkErrorAndThrow();
+		oldSpecimen.update(specimen);
+		daoFactory.getSpecimenDao().saveOrUpdate(oldSpecimen);
+		return SpecimenUpdatedEvent.ok(SpecimenDetail.fromDomain(oldSpecimen));
+	}
+
+	@Override
+	@PlusTransactional
+	public SpecimenUpdatedEvent patchSpecimen(PatchSpecimenEvent req) {
+		try {
+			Long specimenId = req.getId();
+			Specimen oldSpecimen = daoFactory.getSpecimenDao().getSpecimen(specimenId);
+			if (oldSpecimen == null) {
+				return SpecimenUpdatedEvent.notFound(specimenId);
+			}
+			Specimen specimen = specimenFactory.patch(oldSpecimen, req.getDetail());
+
 			ObjectCreationException errorHandler = new ObjectCreationException();
-			updateLabel(event.getSpecimenDetail().getLabel(), specimen, oldSpecimen, errorHandler);
-			updateBarcode(event.getSpecimenDetail().getBarcode(), specimen, oldSpecimen, errorHandler);
+			if (req.getDetail().isLabelModified()) {
+				updateLabel(req.getDetail().getLabel(), specimen, oldSpecimen, errorHandler);
+
+			}
+			if (req.getDetail().isBarcodeModified()) {
+				updateBarcode(req.getDetail().getBarcode(), specimen, oldSpecimen, errorHandler);
+			}
 			validateLabelBarcodeUnique(oldSpecimen, specimen, errorHandler);
 			errorHandler.checkErrorAndThrow();
 			oldSpecimen.update(specimen);
@@ -172,46 +228,13 @@ public class SpecimenServiceImpl implements SpecimenService {
 
 	@Override
 	@PlusTransactional
-	public SpecimenUpdatedEvent patchSpecimen(PatchSpecimenEvent event) {
+	public SpecimenDeletedEvent delete(DeleteSpecimenEvent req) {
 		try {
-			Long specimenId = event.getId();
-			Specimen oldSpecimen = daoFactory.getSpecimenDao().getSpecimen(specimenId);
-			if (oldSpecimen == null) {
-				return SpecimenUpdatedEvent.notFound(specimenId);
-			}
-			Specimen specimen = specimenFactory.patch(oldSpecimen, event.getDetail());
-
-			ObjectCreationException errorHandler = new ObjectCreationException();
-			if (event.getDetail().isLabelModified()) {
-				updateLabel(event.getDetail().getLabel(), specimen, oldSpecimen, errorHandler);
-
-			}
-			if (event.getDetail().isBarcodeModified()) {
-				updateBarcode(event.getDetail().getBarcode(), specimen, oldSpecimen, errorHandler);
-			}
-			validateLabelBarcodeUnique(oldSpecimen, specimen, errorHandler);
-			errorHandler.checkErrorAndThrow();
-			oldSpecimen.update(specimen);
-			daoFactory.getSpecimenDao().saveOrUpdate(oldSpecimen);
-			return SpecimenUpdatedEvent.ok(SpecimenDetail.fromDomain(specimen));
-		}
-		catch (ObjectCreationException oce) {
-			return SpecimenUpdatedEvent.invalidRequest(ScgErrorCode.ERRORS.message(), oce.getErroneousFields());
-		}
-		catch (Exception ex) {
-			return SpecimenUpdatedEvent.serverError(ex);
-		}
-	}
-
-	@Override
-	@PlusTransactional
-	public SpecimenDeletedEvent delete(DeleteSpecimenEvent event) {
-		try {
-			Specimen specimen = daoFactory.getSpecimenDao().getSpecimen(event.getId());
+			Specimen specimen = daoFactory.getSpecimenDao().getSpecimen(req.getId());
 			if (specimen == null) {
-				return SpecimenDeletedEvent.notFound(event.getId());
+				return SpecimenDeletedEvent.notFound(req.getId());
 			}
-			specimen.delete(event.isIncludeChildren());
+			specimen.delete(req.isIncludeChildren());
 
 			daoFactory.getSpecimenDao().saveOrUpdate(specimen);
 			return SpecimenDeletedEvent.ok();
@@ -232,7 +255,7 @@ public class SpecimenServiceImpl implements SpecimenService {
 			if (createAliquotEvent.getAliquotDetail().getNoOfAliquots() < 1) {
 				ObjectCreationException.raiseError(SpecimenErrorCode.INVALID_ALIQUOT_COUNT, ALIQUOT_COUNT);
 			}
-			Specimen specimen = daoFactory.getSpecimenDao().getSpecimen(createAliquotEvent.getSpecimenId());
+			Specimen specimen = getSpecimen(createAliquotEvent);
 			if (specimen == null) {
 				return AliquotCreatedEvent.notFound(createAliquotEvent.getSpecimenId());
 			}
@@ -241,7 +264,7 @@ public class SpecimenServiceImpl implements SpecimenService {
 			}
 
 			Set<Specimen> aliquots = specimenFactory.createAliquots(specimen, createAliquotEvent.getAliquotDetail());
-			Set<Specimen> childCollection = specimen.getChildCollection();
+			Set<Specimen> childCollection = specimen.getChildSpecimens();
 			childCollection.addAll(aliquots);
 			daoFactory.getSpecimenDao().saveOrUpdate(specimen);
 
@@ -259,6 +282,21 @@ public class SpecimenServiceImpl implements SpecimenService {
 		}
 	}
 	
+	private Specimen getSpecimen(CreateAliquotEvent createAliquotEvent) {
+		Long parentSpecimenId = createAliquotEvent.getSpecimenId();
+		String specimenLabel = createAliquotEvent.getSpecimenLabel();
+		
+		if (parentSpecimenId != null) {
+			return daoFactory.getSpecimenDao().getSpecimen(parentSpecimenId);
+		} else if (!isBlank(specimenLabel)) {
+			return daoFactory.getSpecimenDao().getSpecimenByLabel(specimenLabel);
+		} else {
+			ObjectCreationException oce = new ObjectCreationException();
+			oce.addError(SpecimenErrorCode.MISSING_ATTR_VALUE, PARENT_SPECIMEN_LABEL_ID);
+			throw oce;
+		}
+	}
+
 	private void validateLabelBarcodeUnique(Specimen oldSpecimen, Specimen newSpecimen,
 			ObjectCreationException errorHandler) {
 		if (!isBlank(newSpecimen.getBarcode()) && !newSpecimen.getBarcode().equals(oldSpecimen.getBarcode())) {
@@ -302,22 +340,21 @@ public class SpecimenServiceImpl implements SpecimenService {
 	}
 
 	private void updateLabel(String label, Specimen specimen, Specimen oldSpecimen, ObjectCreationException errorHandler) {
-		// TODO: Fix this
-//		String specimenLabelFormat = specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration()
-//				.getCollectionProtocol().getSpecimenLabelFormat();
-//
-//		if (isBlank(specimenLabelFormat)) {
-//			if (isBlank(label)) {
-//				errorHandler.addError(SpecimenErrorCode.MISSING_ATTR_VALUE, LABEL);
-//				return;
-//			}
-//			specimen.setLabel(label);
-//		}
-//		else if (!oldSpecimen.getLabel().equalsIgnoreCase(label)) {
-//			errorHandler.addError(SpecimenErrorCode.AUTO_GENERATED_LABEL, LABEL);
-//			return;
-//		}
-//
+		String specimenLabelFormat = specimen.getSpecimenCollectionGroup().getCollectionProtocolRegistration()
+				.getCollectionProtocol().getSpecimenLabelFormat();
+
+		if (isBlank(specimenLabelFormat)) {
+			if (isBlank(label)) {
+				errorHandler.addError(SpecimenErrorCode.MISSING_ATTR_VALUE, LABEL);
+				return;
+			}
+			specimen.setLabel(label);
+		}
+		else if (!isBlank(label)) {
+			errorHandler.addError(SpecimenErrorCode.AUTO_GENERATED_LABEL, LABEL);
+			return;
+		}
+
 	}
 
 	/**
@@ -367,7 +404,7 @@ public class SpecimenServiceImpl implements SpecimenService {
 			}
 			specimen.setBarcode(barcode);
 		}
-		else if (!specimen.getBarcode().equalsIgnoreCase(oldSpecimen.getBarcode())) {
+		else if (!isBlank(barcode)) {
 			errorHandler.addError(SpecimenErrorCode.AUTO_GENERATED_BARCODE, BARCODE);
 			return;
 		}
@@ -382,5 +419,7 @@ public class SpecimenServiceImpl implements SpecimenService {
 	private static final String SPECIMEN_AVAILABLE_QUANTITY = "Specimen available quantity ";
 
 	private static final String DEFAULT_BARCODE_TOKEN = "SPECIMEN_LABEL";
+	
+	private static final String PARENT_SPECIMEN_LABEL_ID = "Parent specimen label or Parent specimen id";
 
 }

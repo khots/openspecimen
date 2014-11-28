@@ -43,4 +43,33 @@ public class ExternalIdentifier {
 		this.specimen = specimen;
 	}
 
+	@Override
+	public int hashCode() {
+		return 31 * 1 
+				+ ((name == null) ? 0 : name.hashCode()) 
+				+ ((value == null) ? 0 : value.hashCode());
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (obj == null) {
+			return false;
+		}
+		
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		
+		ExternalIdentifier other = (ExternalIdentifier) obj;
+		if (name != null && value != null && 
+				name.equals(other.name) && value.equals(other.value)) {
+			return true;
+		} 
+		
+		return false;
+	}
 }

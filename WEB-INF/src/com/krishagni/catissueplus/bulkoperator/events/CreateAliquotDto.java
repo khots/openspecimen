@@ -1,13 +1,12 @@
+package com.krishagni.catissueplus.bulkoperator.events;
 
-package com.krishagni.catissueplus.core.biospecimen.events;
+import com.krishagni.catissueplus.core.biospecimen.events.AliquotDetail;
 
-import com.krishagni.catissueplus.core.common.events.RequestEvent;
-
-public class CreateAliquotEvent extends RequestEvent {
+public class CreateAliquotDto {
 	private Long specimenId;
 	
 	private String specimenLabel;
-
+	
 	private AliquotDetail aliquotDetail;
 
 	public Long getSpecimenId() {
@@ -33,5 +32,4 @@ public class CreateAliquotEvent extends RequestEvent {
 	public void setAliquotDetail(AliquotDetail aliquotDetail) {
 		this.aliquotDetail = aliquotDetail;
 	}
-
 }

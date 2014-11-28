@@ -303,7 +303,7 @@ public class SpecimenFactoryImpl implements SpecimenFactory {
 				errorHandler.addError(ScgErrorCode.INVALID_ATTR_VALUE, BIOHAZARD);
 				return;
 			}
-			specimen.getBiohazardCollection().add(biohazard);
+			specimen.getBiohazards().add(biohazard);
 		}
 	}
 	
@@ -313,13 +313,11 @@ public class SpecimenFactoryImpl implements SpecimenFactory {
 
 	private void setExternalIdsCollection(SpecimenDetail specimenDetail, Specimen specimen,
 			ObjectCreationException errorHandler) {
-		//need to call the common update collection method
 		if (specimenDetail.getExternalIdentifierDetails() == null
 				&& specimenDetail.getExternalIdentifierDetails().isEmpty()) {
 			return;
 		}
 		Set<ExternalIdentifier> externalIdentifiers = new HashSet<ExternalIdentifier>();
-		//		SetUpdater.<String> newInstance().update(externalIdentifiers, specimenDetail.getExternalIdentifierDetails());
 
 		for (ExternalIdentifierDetail extIdDetail : specimenDetail.getExternalIdentifierDetails()) {
 			ExternalIdentifier identifier = new ExternalIdentifier();
@@ -328,12 +326,8 @@ public class SpecimenFactoryImpl implements SpecimenFactory {
 			identifier.setSpecimen(specimen);
 			externalIdentifiers.add(identifier);
 		}
-		specimen.setExternalIdentifierCollection(externalIdentifiers);
+		specimen.setExternalIdentifiers(externalIdentifiers);
 	}
-
-	//	private void addError(CatissueErrorCode event, String field) {
-	//		exception.addError(event, field);
-	//	}
 
 	@Override
 	public Set<Specimen> createAliquots(Specimen specimen, AliquotDetail aliquotDetail) {
@@ -376,6 +370,7 @@ public class SpecimenFactoryImpl implements SpecimenFactory {
 	public Specimen createAliquot(Specimen specimen, AliquotDetail aliquotDetail) {
 		Specimen aliquot = new Specimen();
 
+		//TODO: Add Container storage logic for aliquots
 		aliquot.setTissueSite(specimen.getTissueSite());
 		aliquot.setTissueSide(specimen.getTissueSide());
 		aliquot.setPathologicalStatus(specimen.getPathologicalStatus());
@@ -394,17 +389,17 @@ public class SpecimenFactoryImpl implements SpecimenFactory {
 		aliquot.setCreatedOn(new Date());
 		aliquot.setCollectionStatus(Status.SPECIMEN_COLLECTION_STATUS_COLLECTED.getStatus());
 		aliquot.setSpecimenCollectionGroup(specimen.getSpecimenCollectionGroup());
-		aliquot.setBiohazardCollection(new HashSet<Biohazard>(specimen.getBiohazardCollection()));
+		aliquot.setBiohazards(new HashSet<Biohazard>(specimen.getBiohazards()));
 
 		HashSet<ExternalIdentifier> externalIdentifierColl = new HashSet<ExternalIdentifier>();
-		for (ExternalIdentifier externalIdentifier : specimen.getExternalIdentifierCollection()) {
+		for (ExternalIdentifier externalIdentifier : specimen.getExternalIdentifiers()) {
 			ExternalIdentifier newExtIndentifier = new ExternalIdentifier();
 			newExtIndentifier.setName(externalIdentifier.getName());
 			newExtIndentifier.setValue(externalIdentifier.getValue());
 			newExtIndentifier.setSpecimen(aliquot);
 			externalIdentifierColl.add(newExtIndentifier);
 		}
-		aliquot.setExternalIdentifierCollection(externalIdentifierColl);
+		aliquot.setExternalIdentifiers(externalIdentifierColl);
 		return aliquot;
 
 	}

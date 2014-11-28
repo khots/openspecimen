@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.krishagni.catissueplus.core.administrative.domain.Biohazard;
 import com.krishagni.catissueplus.core.biospecimen.domain.factory.ParticipantErrorCode;
+import com.krishagni.catissueplus.core.common.SetUpdater;
 import com.krishagni.catissueplus.core.common.errors.CatissueException;
 import com.krishagni.catissueplus.core.common.util.Status;
 import com.krishagni.catissueplus.core.common.util.Utility;
@@ -55,11 +56,11 @@ public class Specimen {
 
 	private Specimen parentSpecimen;
 
-	private Set<Specimen> childCollection = new HashSet<Specimen>();
+	private Set<Specimen> childSpecimens = new HashSet<Specimen>();
 
-	private Set<Biohazard> biohazardCollection = new HashSet<Biohazard>();
+	private Set<Biohazard> biohazards = new HashSet<Biohazard>();
 
-	private Set<ExternalIdentifier> externalIdentifierCollection = new HashSet<ExternalIdentifier>();
+	private Set<ExternalIdentifier> externalIdentifiers = new HashSet<ExternalIdentifier>();
 
 	public Long getId() {
 		return id;
@@ -240,28 +241,28 @@ public class Specimen {
 		this.parentSpecimen = parentSpecimen;
 	}
 
-	public Set<Specimen> getChildCollection() {
-		return childCollection;
+	public Set<Specimen> getChildSpecimens() {
+		return childSpecimens;
 	}
 
-	public void setChildCollection(Set<Specimen> childSpecimenCollection) {
-		this.childCollection = childSpecimenCollection;
+	public void setChildSpecimens(Set<Specimen> childSpecimenCollection) {
+		this.childSpecimens = childSpecimenCollection;
 	}
 
-	public Set<Biohazard> getBiohazardCollection() {
-		return biohazardCollection;
+	public Set<Biohazard> getBiohazards() {
+		return biohazards;
 	}
 
-	public void setBiohazardCollection(Set<Biohazard> biohazardCollection) {
-		this.biohazardCollection = biohazardCollection;
+	public void setBiohazards(Set<Biohazard> biohazardCollection) {
+		this.biohazards = biohazardCollection;
 	}
 
-	public Set<ExternalIdentifier> getExternalIdentifierCollection() {
-		return externalIdentifierCollection;
+	public Set<ExternalIdentifier> getExternalIdentifiers() {
+		return externalIdentifiers;
 	}
 
-	public void setExternalIdentifierCollection(Set<ExternalIdentifier> externalIdentifierCollection) {
-		this.externalIdentifierCollection = externalIdentifierCollection;
+	public void setExternalIdentifiers(Set<ExternalIdentifier> externalIdentifiers) {
+		this.externalIdentifiers = externalIdentifiers;
 	}
 
 	public void setActive() {
@@ -278,7 +279,7 @@ public class Specimen {
 
 	public void delete(boolean isIncludeChildren) {
 		if (isIncludeChildren) {
-			for (Specimen specimen : this.getChildCollection()) {
+			for (Specimen specimen : this.getChildSpecimens()) {
 				specimen.delete(isIncludeChildren);
 			}
 		}
@@ -296,7 +297,7 @@ public class Specimen {
 	}
 
 	private void checkActiveDependents() {
-		for (Specimen specimen : this.getChildCollection()) {
+		for (Specimen specimen : this.getChildSpecimens()) {
 			if (specimen.isActive()) {
 				throw new CatissueException(ParticipantErrorCode.ACTIVE_CHILDREN_FOUND);
 			}
@@ -304,9 +305,41 @@ public class Specimen {
 	}
 
 	public void update(Specimen specimen) {
-
+		setTissueSite(specimen.getTissueSite());
+		setTissueSide(specimen.getTissueSide());
+		setPathologicalStatus(specimen.getPathologicalStatus());
+		setLineage(specimen.getLineage());
+		setInitialQuantity(specimen.getInitialQuantity());
+		setSpecimenClass(specimen.getSpecimenClass());
+		setSpecimenType(specimen.getSpecimenType());
+		setConcentrationInMicrogramPerMicroliter(specimen.getConcentrationInMicrogramPerMicroliter());
+		setLabel(specimen.getLabel());
+		setActivityStatus(specimen.getActivityStatus());
+		setIsAvailable(specimen.getIsAvailable());
+		setBarcode(specimen.getBarcode());
+		setComment(specimen.getComment());
+		setCreatedOn(specimen.getCreatedOn());
+		setAvailableQuantity(specimen.getAvailableQuantity());
+		setCollectionStatus(specimen.getCollectionStatus());
+		setSpecimenCollectionGroup(specimen.getSpecimenCollectionGroup());
+		setSpecimenRequirement(specimen.getSpecimenRequirement());
+		setSpecimenPosition(specimen.getSpecimenPosition());
+		setParentSpecimen(specimen.getParentSpecimen());
+		updateBiohazard(specimen.getBiohazards());
+		updateExternalIdentifiers(specimen.getExternalIdentifiers());
 	}
 
+	private void updateBiohazard(Set<Biohazard> biohazards) {
+		SetUpdater.<Biohazard>newInstance().update(this.biohazards, biohazards);
+	}
+	
+	private void updateExternalIdentifiers(Set<ExternalIdentifier> externalIdentifierCollections) {
+		SetUpdater.<ExternalIdentifier>newInstance().update(this.externalIdentifiers, externalIdentifierCollections);
+		
+		for (ExternalIdentifier externalIdentifier : this.externalIdentifiers) {
+			externalIdentifier.setSpecimen(this);
+		}
+	}
 	
 	@Override
 	public int hashCode() {
@@ -332,9 +365,9 @@ public class Specimen {
 			if (other.id != null) {
 				return false;
 			}
-		} else if (!id.equals(other.id)) {
-			return false;
+		} else if (id.equals(other.id)) {
+			return true;
 		}
-		return true;
+		return false;
 	}
 }
