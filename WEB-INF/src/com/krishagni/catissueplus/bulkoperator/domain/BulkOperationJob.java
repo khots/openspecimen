@@ -28,6 +28,8 @@ public class BulkOperationJob
 	private Long totalRecordsCount;
 
 	private Long processedRecords;
+	
+	private String trackingId;
 
 	public Long getId() {
 		return id;
@@ -117,17 +119,11 @@ public class BulkOperationJob
 		this.processedRecords = currentRecordsProcessed;
 	}
 
-	public byte[] getLogFileBytes() {
-		try {
-			if (logFile != null) {
-				int length = (int) logFile.length();
-				byte [] logFileBytes = logFile.getBytes(1, length);
-				return logFileBytes;
-			} 
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		
-		return null;
+	public String getTrackingId() {
+		return trackingId;
+	}
+
+	public void setTrackingId(String trackingId) {
+		this.trackingId = trackingId;
 	}
 }

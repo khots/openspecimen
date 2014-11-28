@@ -2,7 +2,7 @@ package com.krishagni.catissueplus.bulkoperator.events;
 
 import com.krishagni.catissueplus.core.common.events.RequestEvent;
 
-public class ReqLogFileContentEvent extends RequestEvent {
+public class ReqJobDetailEvent extends RequestEvent {
 	private String trackingId;
 
 	public String getTrackingId() {
@@ -12,4 +12,4 @@ public class ReqLogFileContentEvent extends RequestEvent {
 	public void setTrackingId(String trackingId) {
 		this.trackingId = trackingId;
 	}
-}
+}	

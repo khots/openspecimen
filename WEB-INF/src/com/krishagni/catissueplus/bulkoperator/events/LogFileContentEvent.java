@@ -1,20 +1,22 @@
 package com.krishagni.catissueplus.bulkoperator.events;
 
+import java.io.InputStream;
+
 import com.krishagni.catissueplus.core.common.errors.CatissueErrorCode;
 import com.krishagni.catissueplus.core.common.events.EventStatus;
 import com.krishagni.catissueplus.core.common.events.ResponseEvent;
 
 public class LogFileContentEvent extends ResponseEvent {
-	private byte [] logFileContents;
+	private InputStream logFileInputStream;
 
 	private String fileName;
 	
-	public byte[] getLogFileContents() {
-		return logFileContents;
+	public InputStream getLogFileInputStream() {
+		return logFileInputStream;
 	}
-	
-	public void setLogFileContents(byte[] logFileContents) {
-		this.logFileContents = logFileContents;
+
+	public void setLogFileInputStream(InputStream inputStream) {
+		this.logFileInputStream = inputStream;
 	}
 
 	public String getFileName() {
@@ -25,10 +27,10 @@ public class LogFileContentEvent extends ResponseEvent {
 		this.fileName = fileName;
 	}
 
-	public static LogFileContentEvent ok(byte[] logFileContents, String fileName) {
+	public static LogFileContentEvent ok(InputStream fileInputStream, String fileName) {
 		LogFileContentEvent resp = new LogFileContentEvent();
 		resp.setStatus(EventStatus.OK);
-		resp.setLogFileContents(logFileContents);
+		resp.setLogFileInputStream(fileInputStream);
 		resp.setFileName(fileName);
 		return resp;
 	}

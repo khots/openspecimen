@@ -24,6 +24,8 @@ public class JobDetail {
 
 	private Long processedRecords;
 	
+	private String trackingId;
+	
 	private UserSummary startedBy;
 	
 	public Long getId() {
@@ -90,6 +92,14 @@ public class JobDetail {
 		this.processedRecords = processedRecords;
 	}
 
+	public String getTrackingId() {
+		return trackingId;
+	}
+
+	public void setTrackingId(String trackingId) {
+		this.trackingId = trackingId;
+	}
+
 	public UserSummary getStartedBy() {
 		return startedBy;
 	}
@@ -109,6 +119,7 @@ public class JobDetail {
 		detail.setTotalRecordsCount(job.getTotalRecordsCount());
 		detail.setProcessedRecords(job.getProcessedRecords());
 		detail.setStartedBy(UserSummary.fromUser(job.getStartedBy()));
+		detail.setTrackingId(job.getTrackingId());
 		return detail;
 	}
 	

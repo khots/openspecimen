@@ -398,7 +398,7 @@ public abstract class AbstractBulkObjectBuilder {
 							.getClassName())) {
 						if (!Validator.isEmpty(csvReader.getColumn(attribute.getCsvColumnName()
 								+ columnSuffix))) {
-							String csvDataValue =csvReader.getColumn(attribute.getCsvColumnName()+ columnSuffix);
+							String csvDataValue =csvReader.getColumn(attribute.getCsvColumnName()+ columnSuffix).trim();
 							
 							Object attributeValue = attribute
 									.getValueOfDataType(csvDataValue, validate,
@@ -447,7 +447,7 @@ public abstract class AbstractBulkObjectBuilder {
 		String csvDataValue=null;
 		if(csvReader.getColumn(attribute.getCsvColumnName()+ columnSuffix)!=null)
 		{
-			csvDataValue=csvReader.getColumn(attribute.getCsvColumnName()+ columnSuffix);
+			csvDataValue=csvReader.getColumn(attribute.getCsvColumnName()+ columnSuffix).trim();
 		}
 		if(Validator.isEmpty(csvDataValue) && attribute.getDefaultValue()!=null)
 		{
@@ -482,7 +482,7 @@ public abstract class AbstractBulkObjectBuilder {
 	protected void getinformationForHookingData(CsvReader csvReader, HookingInformation hookingInformation) {		
 		for (Attribute attr : hookingInformation.getAttributeCollection()) {
 			if (!Validator.isEmpty(csvReader.getColumn(attr.getCsvColumnName()))) {
-				String csvDataValue = csvReader.getColumn(attr.getCsvColumnName());
+				String csvDataValue = csvReader.getColumn(attr.getCsvColumnName()).trim();
 				hookingInformation.getDataHookingInformation().put(attr.getName(), csvDataValue);
 			} else{
 				hookingInformation.getDataHookingInformation().remove(attr.getName());

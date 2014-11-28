@@ -464,9 +464,9 @@ public class BulkOperationClass
 		{
 			identifier = (Long) Class.forName(className).getMethod("getId", (Class<?>[])null).invoke(
 					objectOnWhichMethodToInvoke, (Object[])null);
-		}
-		catch (Exception exp)
-		{
+		} catch (NoSuchMethodException nsme) {
+			//do nothing pass null identifier back.
+		} catch (Exception exp)	{
 			logger.error(exp.getMessage(), exp);
 			exp.printStackTrace();
 			throw new BulkOperationException(exp.getMessage(), exp);

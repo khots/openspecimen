@@ -17,7 +17,8 @@ import com.krishagni.catissueplus.core.common.errors.ObjectCreationException;
 
 public class JobUtility {
 
-	public static BulkOperationJob createJob(String operationName, Long userId, BulkOperationJobDao jobDao, UserDao userDao) {
+	public static BulkOperationJob createJob(String operationName, Long userId, BulkOperationJobDao jobDao, UserDao userDao,
+			String trackingId) {
 		try {
 			BulkOperationJob job = new BulkOperationJob();
 			job.setName(operationName);
@@ -30,6 +31,7 @@ public class JobUtility {
 				throw oce;
 			}
 			
+			job.setTrackingId(trackingId);
 			job.setStartedBy(user);
 			job.setStartTime(new Timestamp(new Date().getTime()));
 			job.setStatus(JobStatusConstants.JOB_IN_PROGRESS_STATUS);

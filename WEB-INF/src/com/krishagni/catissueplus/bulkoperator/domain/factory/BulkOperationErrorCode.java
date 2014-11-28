@@ -7,7 +7,9 @@ public enum BulkOperationErrorCode implements CatissueErrorCode {
 	INVALID_CSV_TEMPLATE(1501, "Provided csv template is invalid!"),
 	INVALID_PAGINATION_FILTER(1502, "Invalid pagination filter"),
 	INVALID_JOB_DETAILS(1503, "Invalid Job-id"),
-	MISSING_JOB_ID(1504, "Required job-id is null")
+	MISSING_JOB_ID(1504, "Required job-id is null"),
+	INVALID_TRACKING_ID(1505, "Invalid tracking Id."),
+	MISSING_TRACKING_ID(1506, "Tracking id is required for this operation.")
 	;
 	
 	private int code;

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.krishagni.catissueplus.bulkoperator.csv.CsvReader;
+import com.krishagni.catissueplus.bulkoperator.events.DERecordInformation;
 import com.krishagni.catissueplus.bulkoperator.metadata.Attribute;
 import com.krishagni.catissueplus.bulkoperator.metadata.BulkOperationClass;
 import com.krishagni.catissueplus.bulkoperator.metadata.HookingInformation;
@@ -39,29 +40,26 @@ public class DynamicExtensionBulkObjectBuilder extends AbstractBulkObjectBuilder
 	public Object process(CsvReader csvReader, int csvRowCounter)
 			throws Exception
 	{
-		Long recordEntryId=null;
 		try
 		{
-
-			HookingInformation hookingInformationFromTag=bulkOperationClass.getHookingInformation();
+			HashMap<String, Object> dynExtObject = new HashMap<String, Object>();
+			processObject(dynExtObject, bulkOperationClass, csvReader, "", false, csvRowCounter);
+			
+			HookingInformation hookingInformationFromTag = bulkOperationClass.getHookingInformation();
 			getinformationForHookingData(csvReader ,hookingInformationFromTag);
 			String entityClassName = null;
-			if (bulkOperationClass.getContainmentAssociationCollection().size() > 0) {
-				entityClassName = bulkOperationClass.getContainmentAssociationCollection().iterator().next().getClassName();
-			}
 			entityClassName = bulkOperationClass.getClassName();
 		
 			hookingInformationFromTag.setEntityGroupName(bulkOperationClass.getClassName());
 			hookingInformationFromTag.setEntityName(entityClassName);
 			
-//			recordEntryId = bulkOprAppService.insertDEObject(entityClassName, dynExtObject, hookingInformationFromTag);
+			return new DERecordInformation(entityClassName, dynExtObject, hookingInformationFromTag);
 		}
 		catch (Exception exp)
 		{
 			logger.error(exp.getMessage(), exp);
 			throw exp;
 		}
-		return recordEntryId;
 	}
 
 	@Override
@@ -132,7 +130,7 @@ public class DynamicExtensionBulkObjectBuilder extends AbstractBulkObjectBuilder
 		String csvDataValue=null;
 		if(csvReader.getColumn(attribute.getCsvColumnName()+ columnSuffix)!=null)
 		{
-			csvDataValue=csvReader.getColumn(attribute.getCsvColumnName()+ columnSuffix);
+			csvDataValue=csvReader.getColumn(attribute.getCsvColumnName()+ columnSuffix).trim();
 		}
 		if(Validator.isEmpty(csvDataValue) && attribute.getDefaultValue()!=null)
 		{

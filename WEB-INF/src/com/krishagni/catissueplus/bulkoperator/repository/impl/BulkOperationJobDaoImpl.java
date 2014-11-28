@@ -10,6 +10,8 @@ public class BulkOperationJobDaoImpl extends AbstractDao<BulkOperationJob> imple
 	private static final String FQN = BulkOperationJob.class.getName();
 	
 	private static final String GET_ALL_JOBS = FQN + ".getAllJobs";
+	
+	private static final String GET_JOB_BY_TRACKING_ID = FQN + ".getJobByTrackingId";
 			
 	@Override
 	public BulkOperationJob getJob(Long jobId) {
@@ -24,5 +26,16 @@ public class BulkOperationJobDaoImpl extends AbstractDao<BulkOperationJob> imple
 				.setFirstResult(startAt)
 				.setMaxResults(maxRecords)
 				.list();
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public BulkOperationJob getJobByTrackingId(String trackingId) {
+		List<BulkOperationJob> jobs = sessionFactory.getCurrentSession()
+				.getNamedQuery(GET_JOB_BY_TRACKING_ID)
+				.setString("trackingId", trackingId)
+				.list();
+		
+		return jobs.isEmpty() ? null : jobs.iterator().next();
 	}
 }

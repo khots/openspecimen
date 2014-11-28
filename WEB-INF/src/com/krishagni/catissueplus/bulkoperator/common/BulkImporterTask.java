@@ -58,10 +58,12 @@ public class BulkImporterTask implements Runnable {
 	
 	private String operationName;
 	
+	private String jobTrackingId;
+	
 	private boolean isReRun = false;
 
 	public BulkImporterTask(ObjectImporterFactory importerFactory, UserDao userDao, BulkOperationJobDao jobDao, BulkOperation bulkOperation,
-			SessionDataBean session, File fileIn) {
+			String jobTrackingId, SessionDataBean session, File fileIn) {
 		this.importerFactory = importerFactory;
 		this.userDao = userDao;
 		this.jobDao = jobDao;
@@ -69,6 +71,7 @@ public class BulkImporterTask implements Runnable {
 		this.boMetadata = getBulkOperationMetadata(bulkOperation.getXmlTemplate());
 		this.operationName = bulkOperation.getOperationName();
 		this.sdb = session;
+		this.jobTrackingId = jobTrackingId;
 	}
 	
 	private BulkOperationMetadata getBulkOperationMetadata(String inputFile) {
@@ -176,7 +179,7 @@ public class BulkImporterTask implements Runnable {
 	private void createJob() {
 		Transaction txn = startTxn();
 		try {
-			job = JobUtility.createJob(operationName, sdb.getUserId(), jobDao, userDao);
+			job = JobUtility.createJob(operationName, sdb.getUserId(), jobDao, userDao, jobTrackingId);
 			txn.commit();
 		} catch (Exception e) {
 			if (txn != null) {

@@ -8,5 +8,7 @@ import com.krishagni.catissueplus.core.common.repository.Dao;
 public interface BulkOperationJobDao extends Dao<BulkOperationJob> {
 	public BulkOperationJob getJob(Long jobId);
 	
+	public BulkOperationJob getJobByTrackingId(String trackingId);
+	
 	public List<BulkOperationJob> getJobs(int startAt, int maxRecords);
 }
