@@ -23,9 +23,9 @@
   <bean id="importerFactory" class="com.krishagni.catissueplus.bulkoperator.services.impl.ObjectImporterFactoryImpl">
     <property name="importersMap">
       <map>
-        <entry key="CollectionProtocolRegistrationDetail" value-ref="cprImporter"/>
-        <entry key="ScgDetail" value-ref="scgImporter"/>
-        <entry key="SpecimenDetail" value-ref="specimenImporter"/>
+        <entry key="CollectionProtocolRegistrationDetail" value-ref="createRegistrationImporter"/>
+        <entry key="ScgDetail" value-ref="createScgImporter"/>
+        <entry key="SpecimenDetail" value-ref="createSpecimenImporter"/>
         <entry key="UpdateSpecimenDto" value-ref="updateSpecimenImporter"/>
         <entry key="UpdateSpecimenByLabelDto" value-ref="updateSpecimenByLabelImporter"/>
         <entry key="CreateAliquotDto" value-ref="createAliquotImporter"/>
@@ -35,15 +35,15 @@
     </property>
   </bean>
   
-  <bean id="cprImporter" class="com.krishagni.catissueplus.bulkoperator.services.impl.CprImporter">
+  <bean id="createRegistrationImporter" class="com.krishagni.catissueplus.bulkoperator.services.impl.CreateRegistrationImporter">
 	<property name="cprSvc" ref="cprSvc"/>
   </bean>
   
-  <bean id="scgImporter" class="com.krishagni.catissueplus.bulkoperator.services.impl.ScgImporter">
+  <bean id="createScgImporter" class="com.krishagni.catissueplus.bulkoperator.services.impl.CreateScgImporter">
 	<property name="scgSvc" ref="specimenCollGroupService"/>
   </bean>
   
-  <bean id="specimenImporter" class="com.krishagni.catissueplus.bulkoperator.services.impl.SpecimenImporter">
+  <bean id="createSpecimenImporter" class="com.krishagni.catissueplus.bulkoperator.services.impl.CreateSpecimenImporter">
 	<property name="specimenService" ref="specimenSvc"/>
   </bean>
   
