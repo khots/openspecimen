@@ -2,8 +2,6 @@
 package com.krishagni.catissueplus.core.biospecimen.services;
 
 import com.krishagni.catissueplus.core.biospecimen.events.AllSpecimenCollGroupsSummaryEvent;
-import com.krishagni.catissueplus.core.biospecimen.events.BulkRegistrationCreatedEvent;
-import com.krishagni.catissueplus.core.biospecimen.events.CreateBulkRegistrationEvent;
 import com.krishagni.catissueplus.core.biospecimen.events.CreateRegistrationEvent;
 import com.krishagni.catissueplus.core.biospecimen.events.DeleteRegistrationEvent;
 import com.krishagni.catissueplus.core.biospecimen.events.PatchRegistrationEvent;
@@ -25,6 +23,4 @@ public interface CollectionProtocolRegistrationService {
 	RegistrationUpdatedEvent updateRegistration(UpdateRegistrationEvent event);
 
 	RegistrationUpdatedEvent patchRegistration(PatchRegistrationEvent event);
-	
-	BulkRegistrationCreatedEvent createBulkRegistration(CreateBulkRegistrationEvent req);
 }

@@ -52,4 +52,33 @@ public class ConsentTierResponse {
 		this.cpr = cpr;
 	}
 
+	@Override
+	public int hashCode() {
+		return 31 * 1 
+				+ ((response == null) ? 0 : response.hashCode())
+				+ ((consentTier == null) ? 0 : consentTier.hashCode());
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (obj == null) {
+			return false;
+		}
+		
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		
+		ConsentTierResponse other = (ConsentTierResponse) obj;
+		if (response != null && response.equals(other.response) 
+				&& consentTier != null && consentTier.equals(other.consentTier)) {
+			return true;
+		}
+		
+		return false;
+	}
 }

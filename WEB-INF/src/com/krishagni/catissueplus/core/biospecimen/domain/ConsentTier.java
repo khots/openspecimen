@@ -30,4 +30,31 @@ public class ConsentTier {
 	public void setCollectionProtocol(CollectionProtocol collectionProtocol) {
 		this.collectionProtocol = collectionProtocol;
 	}
+	
+	@Override
+	public int hashCode() {
+		return 31 * 1 + ((statement == null) ? 0 : statement.hashCode());
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		
+		if (obj == null) {
+			return false;
+		}
+		
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		
+		ConsentTier other = (ConsentTier) obj;
+		if (statement != null && statement.equals(other.statement)) {
+			return true;
+		}
+		
+		return false;
+	}
 }

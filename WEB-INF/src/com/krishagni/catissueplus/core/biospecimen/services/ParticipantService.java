@@ -39,4 +39,6 @@ public interface ParticipantService {
 	public SubRegistrationDetailsEvent getSubRegistrationDetails(ReqSubRegistrationDetailEvent event);
 	
 	public void createParticipant(Participant participant);
+	
+	public void updateParticipant(Participant existing, Participant participant);
 }

@@ -29,6 +29,7 @@
         <entry key="UpdateSpecimenDto" value-ref="updateSpecimenImporter"/>
         <entry key="UpdateSpecimenByLabelDto" value-ref="updateSpecimenByLabelImporter"/>
         <entry key="CreateAliquotDto" value-ref="createAliquotImporter"/>
+        <entry key="UpdateCprDto" value-ref="updateRegImporter"/>
         <entry key="DERecordInformation" value-ref="deImporter"/>
       </map>
     </property>
@@ -60,5 +61,9 @@
   
   <bean id="deImporter" class="com.krishagni.catissueplus.bulkoperator.services.impl.DEImporter">
 	<property name="formSvc" ref="formSvc"/>
+  </bean>
+  
+  <bean id="updateRegImporter" class="com.krishagni.catissueplus.bulkoperator.services.impl.UpdateRegistrationImporter">
+	<property name="cprSvc" ref="cprSvc"/>
   </bean>
 </beans>

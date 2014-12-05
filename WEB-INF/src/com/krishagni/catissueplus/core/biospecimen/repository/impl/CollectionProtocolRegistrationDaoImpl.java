@@ -178,6 +178,18 @@ public class CollectionProtocolRegistrationDaoImpl
 		
 		return result.isEmpty() ? null : result.iterator().next();
 	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public CollectionProtocolRegistration getCprByPpid(String cpTitle, String ppid) {
+		List<CollectionProtocolRegistration> result = sessionFactory.getCurrentSession()
+				.getNamedQuery(GET_CPR_BY_PPID_AND_CPTITLE)
+				.setString("cpTitle", cpTitle)
+				.setString("ppid", ppid)
+				.list();
+		
+		return result.isEmpty() ? null : result.iterator().next();
+	}
 
 	@Override
 	public ParticipantSummary getPhiParticipant(Long cpId, Long participantId) {
@@ -307,6 +319,8 @@ public class CollectionProtocolRegistrationDaoImpl
 	private static final String FQN = CollectionProtocolRegistration.class.getName();
 	
 	private static final String GET_SCG_AND_SPECIMEN_CNT = FQN + ".getScgAndSpecimenCount";
+	
+	private static final String GET_CPR_BY_PPID_AND_CPTITLE = FQN + ".getCprByPpidAndCpTitle";
 	
 //	private static final String GET_SUB_REGISTRATIONS_BY_PARTICIPANT_AND_CP_ID = FQN + ".getSubRegistrationByParticipantAndCPId";
 //	

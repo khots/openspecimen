@@ -107,43 +107,14 @@ public class CollectionProtocolRegistrationServiceImpl implements CollectionProt
 
 	@Override
 	@PlusTransactional
-	public BulkRegistrationCreatedEvent createBulkRegistration(CreateBulkRegistrationEvent req) {
-		try {
-			ParticipantRegistrationDetails participantRegDetails = req.getParticipantDetails();
-			for (int i =0; i < participantRegDetails.getRegistrationDetails().size(); i++) {
-				CreateRegistrationEvent request = new CreateRegistrationEvent();
-				CollectionProtocolRegistrationDetail cprDetails = buildCprForBulkParticipantDetails(participantRegDetails, i );
-				request.setCpId(cprDetails.getCpId());
-				request.setCprDetail(cprDetails);
-				request.setSessionDataBean(req.getSessionDataBean());
-				
-				RegistrationCreatedEvent response = createRegistration(request);
-				
-				if (response.getStatus() == EventStatus.OK) {
-					CollectionProtocolRegistrationDetail savedCpr = response.getCprDetail(); 
-					participantRegDetails.setId(savedCpr.getParticipant().getId());
-					participantRegDetails.getRegistrationDetails().get(i).setCprId(savedCpr.getId());
-				} else {
-					return BulkRegistrationCreatedEvent.invalidRequest(response.getMessage(), response.getErroneousFields());
-				}
-			}
-			
-			return BulkRegistrationCreatedEvent.ok(participantRegDetails);
-		} catch (Exception e) {
-			return BulkRegistrationCreatedEvent.serverError(e);
-		}
-	}
-
-	@Override
-	@PlusTransactional
 	public RegistrationUpdatedEvent updateRegistration(UpdateRegistrationEvent event) {
 		try {
 			CollectionProtocolRegistration oldCpr = null;
 			if (event.getId() != null) {
 				oldCpr = daoFactory.getCprDao().getCpr(event.getId());
 			}
-			else if (event.getCprDetail().getPpid() != null && event.getCprDetail().getCpId() != null) {
-				oldCpr = daoFactory.getCprDao().getCprByPpId(event.getCprDetail().getCpId(), event.getCprDetail().getPpid());
+			else if (!isBlank(event.getCprDetail().getPpid()) && !isBlank(event.getCprDetail().getCpTitle())) {
+				oldCpr = daoFactory.getCprDao().getCprByPpid(event.getCprDetail().getCpTitle(), event.getCprDetail().getPpid());
 			}
 
 			if (oldCpr == null) {
@@ -151,13 +122,18 @@ public class CollectionProtocolRegistrationServiceImpl implements CollectionProt
 			}
 			ObjectCreationException errorHandler = new ObjectCreationException();
 			event.getCprDetail().setId(event.getId());
+			if (event.getCprDetail().getParticipant() != null) {
+				event.getCprDetail().getParticipant().setId(null);
+			}
 			CollectionProtocolRegistration cpr = registrationFactory.createCpr(event.getCprDetail());
 
 			validatePpid(oldCpr, cpr, errorHandler);
 			validateBarcode(oldCpr.getBarcode(), cpr.getBarcode(), errorHandler);
 			errorHandler.checkErrorAndThrow();
+			updateParticipant(event.getCprDetail().getParticipant(), oldCpr, cpr);
 			oldCpr.update(cpr);
-			daoFactory.getCprDao().saveOrUpdate(cpr);
+			
+			daoFactory.getCprDao().saveOrUpdate(oldCpr);
 			return RegistrationUpdatedEvent.ok(CollectionProtocolRegistrationDetail.fromDomain(cpr));
 		}
 		catch (ObjectCreationException ce) {
@@ -290,20 +266,12 @@ public class CollectionProtocolRegistrationServiceImpl implements CollectionProt
 			ensureUniqueBarcode(newBarcode, errorHandler);
 		}
 	}
-
-	private CollectionProtocolRegistrationDetail buildCprForBulkParticipantDetails(ParticipantRegistrationDetails participantDetails
-			,int i ) {
-		CollectionProtocolRegistrationDetail cprDetails = new CollectionProtocolRegistrationDetail();
-		ParticipantDetail participant = (ParticipantDetail)participantDetails;
+	
+	private void updateParticipant(ParticipantDetail participant, CollectionProtocolRegistration oldCpr, CollectionProtocolRegistration cpr) {
+		if (participant == null) {
+			return; 
+		}
 		
-		cprDetails.setParticipant(participant);
-		CprRegistrationDetails cpr = participantDetails.getRegistrationDetails().get(i);
-		cprDetails.setCpId(cpr.getCpId());
-		cprDetails.setCpTitle(cpr.getCpTitle());
-		cprDetails.setId(cpr.getCprId());
-		cprDetails.setPpid(cpr.getPpId());
-		cprDetails.setRegistrationDate(cpr.getRegistrationDate());
-		cprDetails.setConsentDetails(cpr.getConsentResponseDetail());
-		return cprDetails;
+		participantService.updateParticipant(oldCpr.getParticipant(), cpr.getParticipant());
 	}
 }

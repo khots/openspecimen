@@ -27,4 +27,6 @@ public interface CollectionProtocolRegistrationDao extends Dao<CollectionProtoco
 	public ParticipantSummary getParticipant(Long cpId, Long participantId);
 
 	public List<CollectionProtocolRegistration> getSubRegDetailForParticipantAndCp(Long participantId,Long cpId);
+	
+	public CollectionProtocolRegistration getCprByPpid(String cpTitle, String ppid);
 }

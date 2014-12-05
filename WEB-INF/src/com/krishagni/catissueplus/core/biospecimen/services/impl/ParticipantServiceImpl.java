@@ -98,6 +98,16 @@ public class ParticipantServiceImpl implements ParticipantService {
 		daoFactory.getParticipantDao().saveOrUpdate(participant);
 	}
 
+	public void updateParticipant(Participant existing, Participant participant) {
+		ObjectCreationException errorHandler = new ObjectCreationException();
+		
+		validateSsn(existing.getSocialSecurityNumber(), participant.getSocialSecurityNumber(), errorHandler);
+		checkForUniquePMI(existing.getPmiCollection(), participant.getPmiCollection(), errorHandler);
+		errorHandler.checkErrorAndThrow();	
+		existing.update(participant);
+		daoFactory.getParticipantDao().saveOrUpdate(existing);
+	}
+	
 	/* 
 	 * This will update the participant details.
 	 * @see com.krishagni.catissueplus.core.services.ParticipantService#updateParticipant(com.krishagni.catissueplus.core.events.participants.UpdateParticipantEvent)
