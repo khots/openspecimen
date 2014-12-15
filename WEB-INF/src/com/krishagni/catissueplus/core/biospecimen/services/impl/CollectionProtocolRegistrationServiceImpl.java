@@ -83,10 +83,10 @@ public class CollectionProtocolRegistrationServiceImpl implements CollectionProt
 	@PlusTransactional
 	public RegistrationCreatedEvent createRegistration(CreateRegistrationEvent req) {
 		try {
-			Long cpId = getCpId(req);
-			if (!privilegeSvc.hasPrivilege(req.getSessionDataBean().getUserId(), cpId, Permissions.REGISTRATION)){
-				return RegistrationCreatedEvent.accessDenied(Permissions.REGISTRATION, cpId);
-			}
+//			Long cpId = getCpId(req);
+//			if (!privilegeSvc.hasPrivilege(req.getSessionDataBean().getUserId(), cpId, Permissions.REGISTRATION)){
+//				return RegistrationCreatedEvent.accessDenied(Permissions.REGISTRATION, cpId);
+//			}
 
 			CollectionProtocolRegistration cpr = registrationFactory.createCpr(req.getCprDetail());
 			

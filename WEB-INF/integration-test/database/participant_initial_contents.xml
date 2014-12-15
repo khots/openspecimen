@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <CATISSUE_PARTICIPANT IDENTIFIER="200" LAST_NAME="default_last_name" FIRST_NAME="default_first_name"    
+    MIDDLE_NAME="default_middle_name"  BIRTH_DATE="2012-10-21" DEATH_DATE="2012-10-21"
+    GENDER="MALE"/> 
+
+  <CATISSUE_RACE IDENTIFIER="1" RACE_NAME="Asian" PARTICIPANT_ID="200"/>
+  
+</dataset>
