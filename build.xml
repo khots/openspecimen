@@ -1402,7 +1402,8 @@
 
 		<replace dir="${base.dir}/integration-test-data" propertyfile="${base.dir}/WEB-INF/integration-test/test.properties">
 			<include name ="caTissueCore_Properties.xml"/>
-			<replacefilter token="@@appserver.home.dir@@" value="${appserver.home.dir}"/>
+			<include name ="log4j.properties"/>
+			<replacefilter token="@@appserver.home.dir@@" property="appserver.home.dir"/>
 		</replace>
 		
 		<junit printsummary="yes" haltonfailure="no" failureproperty="test.failed">
@@ -1426,7 +1427,7 @@
 			</batchtest>
 		</junit>
 
-		<delete dir="${base.dir}/integration-test-data" failonerror="false"/>
+		<!--delete dir="${base.dir}/integration-test-data" failonerror="false"/-->
 		<fail message="Test failure detected, check test results." if="test.failed" />
 	</target>
 
