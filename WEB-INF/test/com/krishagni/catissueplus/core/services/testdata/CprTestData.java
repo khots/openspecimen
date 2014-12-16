@@ -196,7 +196,7 @@ public class CprTestData {
 		return participantDto;
 	}
 
-	private static SessionDataBean getSessionDataBean() {
+	public static SessionDataBean getSessionDataBean() {
 		SessionDataBean sessionDataBean = new SessionDataBean();
 		sessionDataBean.setAdmin(true);
 		sessionDataBean.setCsmUserId("1");
