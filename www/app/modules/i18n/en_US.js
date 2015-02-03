@@ -317,6 +317,11 @@
     "super_admin": "Super Administrator",
     "login_details": "Login Details",
     "permissions": "Permissions",
+    "site": "Site",
+    "cp": "Collection Protocol",
+    "role": "Role",
+    "all": "All",
+
 
     "tooltip": {
       "create_user": "Click to add new User",

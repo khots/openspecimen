@@ -5,6 +5,7 @@ angular.module('os.administrative.user',
     'os.administrative.user.list',
     'os.administrative.user.addedit',
     'os.administrative.user.detail',
+    'os.administrative.user.permissions'
   ])
 
   .config(function($stateProvider) {
@@ -35,6 +36,17 @@ angular.module('os.administrative.user',
       .state('user-detail.overview', {
         url: '/overview',
         templateUrl: 'modules/administrative/user/overview.html',
+        parent: 'user-detail'
+      })
+      .state('user-detail.permissions', {
+        url: '/permissions',
+        templateUrl: 'modules/administrative/user/permissions.html',
+        resolve: {
+          permissions: function($stateParams, User) {
+            return User.getPermissions($stateParams.userId);
+          }
+        },
+        controller: 'UserPermissionsCtrl',
         parent: 'user-detail'
       })
   });
