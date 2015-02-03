@@ -31,12 +31,12 @@
                 <div class="col col-xs-5 os-ellipsis">{{permission.cp}}</div>
                 <div class="col col-xs-3 os-ellipsis">{{permission.roleName}}</div>
                 <div class="col col-xs-1 action">
-                  <div class="btn-group" ng-if="showBtns">
-                    <button class="btn btn-xs btn-default" ng-click="showEditPermission(permission, $index)">
+                  <div class="btn-group" ng-if="showBtns" >
+                    <button class="btn btn-xs btn-default os-btn-icon" ng-click="showEditPermission(permission, $index)">
                       <span class="fa fa-pencil"></span>
                     </button>
-                    <button class="btn btn-xs btn-default">
-                      <span class="fa fa-remove" ng-click="removePermission(permission, $index)"></span>
+                    <button class="btn btn-xs btn-default os-btn-icon" ng-click="removePermission(permission, $index)">
+                      <span class="fa fa-remove"></span>
                     </button>
                   </div>
                 </div>
@@ -52,7 +52,8 @@
         </div>
       </div>
 
-      <a class="list-group-item" ng-click="showAddPermission()" ng-if="!addMode && !allSitePermission">Add Permission...</a>
+      <a class="list-group-item" ng-click="showAddPermission()" 
+        ng-if="!addMode && !(permissions.length > 0 && permissions[0].site == all)">Add Permission...</a>
       <div ng-if="addMode" class="os-inplace-form-edit-po">
         <div class="list-group-item">
         <div class="title">New Permission</div>

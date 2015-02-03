@@ -25,7 +25,7 @@ angular.module('os.biospecimen.models.cp', ['os.common.models'])
 
     CollectionProtocol.getCps = function(siteName) {
       //TODO: will fix this with back-end change
-      var result = cps[siteName] || [];
+      var result = angular.copy(cps[siteName] || []);
       var d = $q.defer();
       d.resolve(result);
       return d.promise;
