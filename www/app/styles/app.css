@@ -731,3 +731,11 @@ h4.os-sub-section-title, h5.os-sub-section-title, h6.os-sub-section-title {
 .os-col-100 {
   width: 100%;
 }
+
+.os-margin-bot-0 {
+  margin-bottom: 0px !important;
+}
+
+.os-padding-bot-0 {
+  padding-bottom: 0px !important;
+}

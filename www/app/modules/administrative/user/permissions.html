@@ -15,15 +15,15 @@
   <div class="col-xs-10">
     <div class="list-group">
 
-      <div class="list-group-item" ng-if="permissions.length == 0">
+      <div class="list-group-item" ng-if="permissions.length == 0 && !addMode">
         <div class="alert alert-warning">
           <span translate="user.permission.no_permissions">
           </span>
         </div>
       </div>
 
-      <div class="list-group-item" ng-if="permissions.length > 0">
-        <div class="os-table os-table-fixed">
+      <div class="list-group-item" ng-if="permissions.length > 0" ng-class="{'os-padding-bot-0': addMode}">
+        <div class="os-table os-table-fixed" ng-class="{'os-padding-bot-0': addMode}">
           <div class="os-table-head">
             <div class="row">
               <div class="col col-xs-3" translate="user.permission.site">Site</div>
