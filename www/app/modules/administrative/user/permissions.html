@@ -14,36 +14,44 @@
 <div class="clearfix">
   <div class="col-xs-10">
     <div class="list-group">
+
+      <div class="list-group-item" ng-if="permissions.length == 0">
+        <div class="alert alert-warning">
+          <span translate="user.permission.no_permissions">
+          </span>
+        </div>
+      </div>
+
       <div class="list-group-item" ng-if="permissions.length > 0">
         <div class="os-table os-table-fixed">
           <div class="os-table-head">
             <div class="row">
-              <div class="col col-xs-3">Site</div>
-              <div class="col col-xs-5">Collection Protocol</div>
-              <div class="col col-xs-3">Role</div>
+              <div class="col col-xs-3" translate="user.permission.site">Site</div>
+              <div class="col col-xs-5" translate="user.permission.cp">Collection Protocol</div>
+              <div class="col col-xs-3" translate="user.permission.role">Role</div>
               <div class="col col-xs-1">&nbsp;</div>
             </div>
           </div>
           <div class="os-table-body">
-            <div ng-repeat="permission in permissions"  ng-mouseenter="showBtns=true" ng-mouseleave="showBtns=false">
-              <div class="row" ng-if="permission.id != userCPRole.id">
-                <div class="col col-xs-3 os-ellipsis">{{permission.site}}</div>
-                <div class="col col-xs-5 os-ellipsis">{{permission.cp}}</div>
-                <div class="col col-xs-3 os-ellipsis">{{permission.roleName}}</div>
+            <div ng-repeat="perm in permissions"  ng-mouseenter="showBtns=true" ng-mouseleave="showBtns=false">
+              <div class="row" ng-if="perm.id != permission.id">
+                <div class="col col-xs-3 os-ellipsis">{{perm.site}}</div>
+                <div class="col col-xs-5 os-ellipsis">{{perm.cp}}</div>
+                <div class="col col-xs-3 os-ellipsis">{{perm.role}}</div>
                 <div class="col col-xs-1 action">
                   <div class="btn-group" ng-if="showBtns" >
-                    <button class="btn btn-xs btn-default os-btn-icon" ng-click="showEditPermission(permission, $index)">
+                    <button class="btn btn-xs btn-default os-btn-icon" ng-click="showEditPermission(perm, $index)">
                       <span class="fa fa-pencil"></span>
                     </button>
-                    <button class="btn btn-xs btn-default os-btn-icon" ng-click="removePermission(permission, $index)">
+                    <button class="btn btn-xs btn-default os-btn-icon" ng-click="removePermission($index)">
                       <span class="fa fa-remove"></span>
                     </button>
                   </div>
                 </div>
               </div>
-              <div ng-if="permission.id == userCPRole.id" class="os-inplace-form-edit-po">
+              <div ng-if="perm.id == permission.id" class="os-inplace-form-edit-po">
                 <div class="list-group-item">
-                  <div class="title">Update Permission</div>
+                  <div class="title" translate="user.permission.update">Update Permission</div>
                   <div class="content" ng-include="'permission-add-edit.html'"></div>
                 </div>
               </div>
@@ -52,11 +60,11 @@
         </div>
       </div>
 
-      <a class="list-group-item" ng-click="showAddPermission()" 
+      <a class="list-group-item" ng-click="showAddPermission()" translate="user.permission.add"
         ng-if="!addMode && !(permissions.length > 0 && permissions[0].site == all)">Add Permission...</a>
       <div ng-if="addMode" class="os-inplace-form-edit-po">
         <div class="list-group-item">
-        <div class="title">New Permission</div>
+        <div class="title" translate="user.permission.new">New Permission</div>
           <div class="content" ng-include="'permission-add-edit.html'"></div>
         </div>
       </div>
@@ -65,12 +73,12 @@
 </div>
 
 <script type="text/ng-template" id="permission-add-edit.html">
-  <form name="pform" os-form-validator="pform"  novalidate>
+  <form name="pform" os-form-validator="pform" novalidate>
     <div class="clearfix">
       <div class="col-xs-4">
         <div class="form-group">
-          <os-select os-md-input ng-model="userCPRole.site" list="sites" name="site" on-change="getCps"
-            placeholder="{{'user.site' | translate}}" required>
+          <os-select os-md-input ng-model="permission.site" list="sites" name="site" on-change="getCps"
+            placeholder="{{'user.permission.site' | translate}}" required>
           </os-select>
           <div os-field-error field="pform.site"></div>
         </div>
@@ -78,8 +86,8 @@
 
       <div class="col-xs-4">
         <div class="form-group">
-          <os-select os-md-input ng-model="userCPRole.cp" list="cps" name="cp"
-            placeholder="{{'user.cp' | translate}}" required>
+          <os-select os-md-input ng-model="permission.cp" list="cps" name="cp"
+            placeholder="{{'user.permission.cp' | translate}}" required>
           </os-select>
           <div os-field-error field="pform.cp"></div>
         </div>
@@ -87,7 +95,7 @@
 
       <div class="col-xs-4">
         <div class="form-group">
-          <os-select os-md-input ng-model="userCPRole.roleName" list="roles" name="role" placeholder="{{'user.role' | translate}}" required>
+          <os-select os-md-input ng-model="permission.role" list="roles" name="role" placeholder="{{'user.permission.role' | translate}}" required>
           </os-select>
           <div os-field-error field="pform.role"></div>
         </div>
@@ -96,10 +104,10 @@
 
     <div class="form-group clearfix">
       <div class="col-xs-4">
-        <button type="submit" class="btn btn-success"  os-form-submit="savePermissions()" translate="common.buttons.save" ng-if="!userCPRole.id">
+        <button type="submit" class="btn btn-success"  os-form-submit="savePermission()" translate="common.buttons.save" ng-if="!permission.id">
           Save
         </button>
-        <button type="submit" class="btn btn-success" os-form-submit="editPermissions()" translate="common.buttons.save" ng-if="userCPRole.id"></button>
+        <button type="submit" class="btn btn-success" os-form-submit="updatePermission()" translate="common.buttons.save" ng-if="permission.id"></button>
         <a class="btn os-btn-text-secondary" ng-click="revertEdit()" translate="common.buttons.cancel">
           Cancel
         </a>

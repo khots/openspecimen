@@ -316,12 +316,18 @@
     "address": "Address",
     "super_admin": "Super Administrator",
     "login_details": "Login Details",
-    "permissions": "Permissions",
-    "site": "Site",
-    "cp": "Collection Protocol",
-    "role": "Role",
-    "all": "All",
 
+    "permission": {
+       "permissions": "Permissions",
+       "new": "New Permission",
+       "add": "Add Permission...",
+       "update": "Update Permission",
+       "site": "Site",
+       "cp": "Collection Protocol",
+       "role": "Role",
+       "no_permissions": "There are no permissions to show. Add a new permission by clicking Add Permission...",
+       "all": "All"
+    },
 
     "tooltip": {
       "create_user": "Click to add new User",
