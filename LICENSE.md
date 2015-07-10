@@ -1,6 +1,20 @@
 Copyright (c) 2011 - till date, Krishagni Solutions (India)
 
-Copyright (c) 2004 - 2011, National Cancer Center (NCI) USA
+Copyright (c) 2004 - 2011 (in alphabetical order):
+
+* Dana Farber Cancer Institute
+* Duke University
+* Emory University
+* Indiana University
+* Krishagni Solutions Pvt Ltd
+* Louisiana Cancer Research Centre
+* Persistent Systems
+* SemanticBits LLC
+* Thomas Jefferson University
+* University of Pittsburgh
+* University of Pennsylvania
+* Washington University
+* Yale University
 
 All rights reserved.
 

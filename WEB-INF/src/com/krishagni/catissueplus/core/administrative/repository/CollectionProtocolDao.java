@@ -3,6 +3,7 @@ package com.krishagni.catissueplus.core.administrative.repository;
 
 import java.util.List;
 
+import com.krishagni.catissueplus.core.biospecimen.events.ChildCollectionProtocolSummary;
 import com.krishagni.catissueplus.core.biospecimen.events.CollectionProtocolSummary;
 import com.krishagni.catissueplus.core.common.repository.Dao;
 
@@ -26,5 +27,5 @@ public interface CollectionProtocolDao extends Dao<CollectionProtocol> {
 	
 	public List<SpecimenRequirement> getSpecimenRequirments(Long cpeId);
 
-	public List<CollectionProtocolSummary> getChildProtocols(Long cpId);
+	public List<ChildCollectionProtocolSummary> getChildProtocols(Long cpId);
 }

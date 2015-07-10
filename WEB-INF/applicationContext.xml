@@ -129,11 +129,17 @@
   <bean id="scgFactory" class="com.krishagni.catissueplus.core.biospecimen.domain.factory.impl.SpecimenCollectionGroupFactoryImpl">
     <property name="daoFactory" ref="biospecimenDaoFactory"/>
   </bean>
+
   <bean id="cprFactory" class="com.krishagni.catissueplus.core.biospecimen.domain.factory.impl.CollectionProtocolRegistrationFactoryImpl">
     <property name="daoFactory" ref="biospecimenDaoFactory"/>
     <property name="participantFactory" ref="participantFactory"/>
+    <property name="ppidGenerator" ref="ppidGenerator"/>
+  </bean>
+  
+  <bean id="ppidGenerator" class="com.krishagni.catissueplus.core.biospecimen.util.impl.PpidGeneratorImpl">
     <property name="keyFactory" ref="keyFactory"/>
   </bean>
+  
   <bean id="participantSvc" class="com.krishagni.catissueplus.core.biospecimen.services.impl.ParticipantServiceImpl">
     <property name="daoFactory" ref="biospecimenDaoFactory"/>
     <property name="participantFactory" ref="participantFactory"/>

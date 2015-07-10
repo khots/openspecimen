@@ -46,6 +46,8 @@ public class ParticipantDetail {
 
 	private Long id;
 	
+	private List<CprSummary> registrations;
+	
 	public String getFirstName() {
 		return firstName;
 	}
@@ -158,7 +160,19 @@ public class ParticipantDetail {
 		this.id = id;
 	}
 
+	public List<CprSummary> getRegistrations() {
+		return registrations;
+	}
+
+	public void setRegistrations(List<CprSummary> registrations) {
+		this.registrations = registrations;
+	}
+
 	public static ParticipantDetail fromDomain(Participant participant) {
+		return fromDomain(participant, false);
+	}
+	
+	public static ParticipantDetail fromDomain(Participant participant, boolean includeCprDetails) {
 		ParticipantDetail participantDetail = new ParticipantDetail();
 		participantDetail.setFirstName(participant.getFirstName());
 		participantDetail.setLastName(participant.getLastName());
@@ -199,6 +213,11 @@ public class ParticipantDetail {
 		participantDetail.setSexGenotype(participant.getSexGenotype());
 		participantDetail.setSsn(participant.getSocialSecurityNumber());
 		participantDetail.setVitalStatus(participant.getVitalStatus());
+		
+		if (includeCprDetails && participant.getCprCollection() != null) {
+			participantDetail.setRegistrations(CprSummary.from(participant.getCprCollection().values()));
+		}
+		
 		return participantDetail;
-	}
+	}	
 }

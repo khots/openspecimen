@@ -11,6 +11,7 @@ import edu.wustl.catissuecore.domain.User;
 import edu.wustl.catissuecore.util.global.Constants;
 import edu.wustl.catissuecore.util.global.Variables;
 import edu.wustl.common.beans.SessionDataBean;
+import edu.wustl.common.util.global.Status;
 import edu.wustl.common.util.global.Validator;
 import edu.wustl.dao.HibernateDAO;
 import edu.wustl.dao.exception.DAOException;
@@ -121,14 +122,14 @@ public class SpecimenUtil
 	public static DisposalEventParameters createDisposeEvent(SessionDataBean sessionDataBean, AbstractSpecimen specimen,
 			String disposalReason)
 	{
-		final DisposalEventParameters disposalEvent = new DisposalEventParameters();
+		DisposalEventParameters disposalEvent = new DisposalEventParameters();
 		disposalEvent.setSpecimen(specimen);
 		disposalEvent.setReason(disposalReason);
 		disposalEvent.setTimestamp(new Date(System.currentTimeMillis()));
-		final User user = new User();
+		User user = new User();
 		user.setId(sessionDataBean.getUserId());
 		disposalEvent.setUser(user);
-		disposalEvent.setActivityStatus(specimen.getActivityStatus());
+		disposalEvent.setActivityStatus(Status.ACTIVITY_STATUS_CLOSED.toString());
 		return disposalEvent;
 	}
 	

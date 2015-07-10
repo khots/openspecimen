@@ -70,6 +70,10 @@ public class SpecimenEditAction extends CatissueBaseAction
 				specimenDTO.setDisposalMins(Integer.toString(cal
 						.get(Calendar.MINUTE)));
 				
+				if(specimenDTO.getCreatedDate() == null) {
+					specimenDTO.setCreatedDate(cal.getTime());
+				}
+				
 				request.setAttribute("specimenDTO", specimenDTO);
 
 				NewSpecimenBizLogic bizLogic = new NewSpecimenBizLogic();

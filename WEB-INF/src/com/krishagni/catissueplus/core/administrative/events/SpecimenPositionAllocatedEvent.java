@@ -39,4 +39,13 @@ public class SpecimenPositionAllocatedEvent extends ResponseEvent {
 		resp.setException(e);
 		return resp;
 	}
+	
+	public static SpecimenPositionAllocatedEvent from(SpecimenPositionUpdatedEvent input) {
+		SpecimenPositionAllocatedEvent resp = new SpecimenPositionAllocatedEvent();
+		resp.setPosition(input.getPosition());
+		resp.setStatus(input.getStatus());
+		resp.setException(input.getException());
+		resp.setErroneousFields(input.getErroneousFields());
+		return resp;
+	}
 }

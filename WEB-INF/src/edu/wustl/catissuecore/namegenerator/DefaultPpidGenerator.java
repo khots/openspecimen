@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.krishagni.catissueplus.core.biospecimen.domain.Participant;
+
 import edu.wustl.catissuecore.domain.CollectionProtocolRegistration;
 import edu.wustl.common.domain.AbstractDomainObject;
 import edu.wustl.common.util.XMLPropertyHandler;
@@ -17,24 +19,54 @@ public class DefaultPpidGenerator implements LabelGenerator{
 	
 	@Override
 	public void setLabel(Object object) {
-		final CollectionProtocolRegistration cpr = (CollectionProtocolRegistration) object;
+		String ppid = "";
+		if(object instanceof CollectionProtocolRegistration){
+			CollectionProtocolRegistration cpr = (CollectionProtocolRegistration)object;
+			edu.wustl.catissuecore.domain.Participant part = cpr.getParticipant();
+			if(part != null && part.getCollectionProtocolRegistrationCollection() != null 
+					&& !part.getCollectionProtocolRegistrationCollection().isEmpty()){
+				for (CollectionProtocolRegistration eCpr : part.getCollectionProtocolRegistrationCollection()) {
+					ppid = eCpr.getProtocolParticipantIdentifier();
+					if(!StringUtils.isEmpty(ppid))
+					{
+						break;
+					}
+				}
+				
+			}
+			((CollectionProtocolRegistration)object).setProtocolParticipantIdentifier(ppid);
+		}
+		else if(object instanceof com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolRegistration){
+			com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolRegistration cpr = (com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolRegistration)object;
+			if(cpr.getParticipant() != null && cpr.getParticipant().getCprCollection() != null && !cpr.getParticipant().getCprCollection().isEmpty()){
+				Participant part = cpr.getParticipant();
+				com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolRegistration eCpr = part.getCprCollection().entrySet().iterator().next().getValue();
+				ppid = eCpr.getProtocolParticipantIdentifier();
+			}
+			((com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolRegistration)object).setProtocolParticipantIdentifier(ppid);
+		}
+		if(!StringUtils.isEmpty(ppid)){
+			return;
+		}
 		String token = "SYS_PPID";
-		if (StringUtils.isEmpty(cpr.getProtocolParticipantIdentifier()))
-		{
 			try {
 				StringBuilder builder = new StringBuilder(100);
 				String ppIdPrefix = XMLPropertyHandler.getValue("PPID_prefix");
 				String ppIdPostfix = XMLPropertyHandler.getValue("PPID_postfix");
 				builder.append(ppIdPrefix).append(TokenFactory.getInstance(token).getTokenValue(object)).append(ppIdPostfix);
-				cpr.setProtocolParticipantIdentifier(builder.toString());
+				ppid = builder.toString();
+				if(object instanceof CollectionProtocolRegistration){
+					((CollectionProtocolRegistration)object).setProtocolParticipantIdentifier(ppid);
+				}
+				else if(object instanceof com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolRegistration){
+					((com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolRegistration)object).setProtocolParticipantIdentifier(ppid);
+				}
 			}
 			catch(Exception exp)
 			{
 				LOGGER.error("Error while generating PPID");
 				LOGGER.error(exp);
-				cpr.setProtocolParticipantIdentifier(null);
 			}
-		}
 	}
 
 	@Override

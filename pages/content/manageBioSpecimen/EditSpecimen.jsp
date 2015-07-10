@@ -94,6 +94,8 @@
 	morphTree.enableThreeStateCheckboxes(false);
 	morphTree.deleteChildItems(0);
 	morphTree.attachEvent("onClick", function(id){
+		value = morphTree.getItemText(id);
+		morphologicalAbnormalityValue = value.substring(0,value.lastIndexOf("("));
 		newMorphCombo.setComboText(morphTree.getItemText(id));
 		newMorphCombo.setComboValue(morphTree.getItemText(id));
 		newMorphCombo.DOMelem_input.title=morphTree.getItemText(id);
@@ -104,7 +106,7 @@
 		LoadSCGTabBar('${requestScope.operation}');
 		newMorphCombo = new dhtmlXCombo("morphologicalAbnormality","morphologicalAbnormality","203px");
 				newMorphCombo.setSize(203);
-				newMorphCombo.loadXML('/openspecimen/MorphologicalAbnormality.do',function(){
+				newMorphCombo.loadXML('/openspecimen/MorphologicalAbnormality.do?mask=${specimenDTO.morphologicalAbnormality}',function(){
 				if("${specimenDTO.morphologicalAbnormality}" == "") {
 					newMorphCombo.setComboText("Not Specified");
 					newMorphCombo.setComboValue("Not Specified");
@@ -128,7 +130,9 @@
 				else
 					newMorphCombo.DOMelem_input.title='Start typing to see values';
 		 	});
-			newMorphCombo.attachEvent("onXLE",function (){newMorphCombo.addOption("${specimenDTO.morphologicalAbnormality}","${specimenDTO.morphologicalAbnormality}");});
+			newMorphCombo.attachEvent("onXLE",function (){
+				//newMorphCombo.addOption("${specimenDTO.morphologicalAbnormality}","${specimenDTO.morphologicalAbnormality}");
+				});
 			dhtmlxEvent(newMorphCombo.DOMelem_input,"mouseover",function(){
 	     var diagnosisVal = newMorphCombo.getSelectedText();
 				if(diagnosisVal){
@@ -312,9 +316,12 @@ req.onreadystatechange = function() {
         function closeTermWindow(){
             aliquotNameSpace.dhxWins.window("containerPositionPopUp").close();
         }
+		function updateSpecimenNode(){
+			parent.handleCpViewForSubCP('${specimenDTO.id}','${specimenDTO.collectionStatus}','${specimenDTO.label}','');
+		}
 </script>
 <!----------------------------------------------------------------------->
-<body onload="init();"> 
+<body onload="init();updateSpecimenNode();"> 
 <html:form action="NewSpecimenEdit.do">
 
 <html:hidden name="specimenDTO" property="generateLabel"/>
@@ -432,16 +439,16 @@ req.onreadystatechange = function() {
                                 </label>
                             </td>
                         </tr>
-						<tr class="tr_alternate_color_white">
-                            <td width="20%" class="black_ar align_right_style">
-                                <label for="label">
-                                    RF ID
-                                </label>
-                            </td>
-                            <td align="left" width="30%">
-                                <html:text styleClass="black_ar" size="30" maxlength="255"  styleId="rfId" name="specimenDTO" property="rfId" onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" onblur="processData(this)" disabled="false" />
-                            </td>
-                        </tr>
+<!-- 						<tr class="tr_alternate_color_white"> -->
+<!--                             <td width="20%" class="black_ar align_right_style"> -->
+<!--                                 <label for="label"> -->
+<!--                                     RF ID -->
+<!--                                 </label> -->
+<!--                             </td> -->
+<!--                             <td align="left" width="30%"> -->
+<%--                                 <html:text styleClass="black_ar" size="30" maxlength="255"  styleId="rfId" name="specimenDTO" property="rfId" onmouseover="showTip(this.id)" onmouseout="hideTip(this.id)" onblur="processData(this)" disabled="false" /> --%>
+<!--                             </td> -->
+<!--                         </tr> -->
                         <tr class="tr_alternate_color_lightGrey">
                             <td  width="20%" class="black_ar align_right_style">
                                 <img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />    
@@ -532,6 +539,7 @@ req.onreadystatechange = function() {
                                 </td>
                             
                                 <td width="20%" class="black_ar align_right_style">
+                                    <img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" />
                                     <label for="createdDate">
                                         <bean:message key="specimen.createdDate"/>
                                     </label>

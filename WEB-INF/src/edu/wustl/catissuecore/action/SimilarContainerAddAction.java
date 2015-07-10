@@ -60,7 +60,7 @@ public class SimilarContainerAddAction extends CommonAddEditAction
 
 		final List list = new ArrayList();
 		final ActionErrors errors = (ActionErrors) request.getAttribute(Globals.ERROR_KEY);
-
+		this.saveErrors(request, errors);
 		this.logger.info("Errors:" + errors);
 		if (errors == null || errors.size() == 0)
 		{

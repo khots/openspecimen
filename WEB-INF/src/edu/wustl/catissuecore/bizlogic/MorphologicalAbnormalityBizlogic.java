@@ -3,7 +3,6 @@ package edu.wustl.catissuecore.bizlogic;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.wustl.common.labelSQLApp.bizlogic.CommonBizlogic;
 import edu.wustl.common.util.global.CommonServiceLocator;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.dao.JDBCDAO;
@@ -17,10 +16,10 @@ public class MorphologicalAbnormalityBizlogic {
 	
 	private static final Logger LOGGER = Logger.getCommonLogger(MorphologicalAbnormalityBizlogic.class);
 	
-	private static String getAbnormalities = "select identifier, value, parent_identifier " +
+	private static String getAbnormalities = "select identifier, value, parent_identifier, CONCEPT_CODE " +
 			"from catissue_permissible_value where public_id='Morphological_Abnormalitiy_PID' and lower(value) like ?";
 
-	private static String getRootAbnormalities = "select p.value ParentName, p.identifier ID, c.TotalCout TotalCout " +
+	private static String getRootAbnormalities = "select p.value ParentName, p.identifier ID, c.TotalCout TotalCout, p.concept_code ConceptCode " +
 			"from catissue_permissible_value p " +
 			"left join ( " +
 			"select parent_identifier, count(*) TotalCout     " +
@@ -29,7 +28,7 @@ public class MorphologicalAbnormalityBizlogic {
 			"group by parent_identifier ) c on c.parent_identifier=p.identifier " +
 			"WHERE p.parent_identifier is NULL and public_id='Morphological_Abnormalitiy_PID' order by p.value";
 
-	private static String getChildAbnormalities = "select p.value ParentName, p.identifier ID, c.TotalCout TotalCout " +
+	private static String getChildAbnormalities = "select p.value ParentName, p.identifier ID, c.TotalCout TotalCout, p.concept_code ConceptCode " +
 			"from catissue_permissible_value p " +
 			"left join (  " +
 			"select parent_identifier, count(*) TotalCout     " +

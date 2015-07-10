@@ -79,6 +79,7 @@ public class SpecimenAddAction extends CatissueBaseAction
 				
 				specimenDTO.setUserId(((SessionDataBean)request.getSession().getAttribute(Constants.SESSION_DATA)).getUserId());
 				Calendar cal = Calendar.getInstance();
+				specimenDTO.setCreatedDate(cal.getTime());
 				specimenDTO.setDisposalDate(cal.getTime());
 				specimenDTO.setDisposalHours(Integer.toString(cal
 						.get(Calendar.HOUR_OF_DAY)));

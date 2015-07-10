@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.krishagni.catissueplus.core.administrative.events.ChildCollectionProtocolsEvent;
 import com.krishagni.catissueplus.core.administrative.events.ReqChildProtocolEvent;
 import com.krishagni.catissueplus.core.biospecimen.events.AllCollectionProtocolsEvent;
+import com.krishagni.catissueplus.core.biospecimen.events.ChildCollectionProtocolSummary;
 import com.krishagni.catissueplus.core.biospecimen.events.CollectionProtocolRegistrationDetail;
 import com.krishagni.catissueplus.core.biospecimen.events.CollectionProtocolSummary;
 import com.krishagni.catissueplus.core.biospecimen.events.CreateRegistrationEvent;
@@ -68,7 +69,7 @@ public class CollectionProtocolController {
 	@RequestMapping(method = RequestMethod.GET, value="/{id}/childProtocols")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public List<CollectionProtocolSummary> getChildProtocolsList(@PathVariable("id") Long id) {
+	public List<ChildCollectionProtocolSummary> getChildProtocolsList(@PathVariable("id") Long id) {
 		ReqChildProtocolEvent req = new ReqChildProtocolEvent();
 		req.setSessionDataBean(getSession()); 
 		req.setCpId(id);

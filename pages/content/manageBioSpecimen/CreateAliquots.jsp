@@ -617,6 +617,7 @@ function giveCall(url,msg,msg1,id)
             </div>
             <div  style="float:left;text-align:right;width:25%;">
                 <div  class="aliquot_details aliquot_form_label">
+                    <span><img src="images/uIEnhancementImages/star.gif" alt="Mandatory" width="6" height="6" hspace="0" vspace="0" /></span>
                     <span  class="black_ar_b"><bean:message key="specimen.createdDate"/></span>
                 </div>
                 <div  class="aliquot_details aliquot_form_label">

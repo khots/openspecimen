@@ -1,11 +1,31 @@
 
 package com.krishagni.catissueplus.core.biospecimen.util.impl;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.krishagni.catissueplus.core.biospecimen.domain.CollectionProtocolRegistration;
+import com.krishagni.catissueplus.core.biospecimen.domain.factory.ParticipantErrorCode;
 import com.krishagni.catissueplus.core.biospecimen.util.PpidGenerator;
+import com.krishagni.catissueplus.core.common.errors.ObjectCreationException;
+import com.krishagni.catissueplus.core.common.util.KeyGenFactory;
+
+import edu.wustl.catissuecore.domain.CollectionProtocol;
+import edu.wustl.catissuecore.namegenerator.LabelGenerator;
+import edu.wustl.catissuecore.namegenerator.LabelGeneratorFactory;
+import edu.wustl.catissuecore.util.global.Constants;
+import edu.wustl.catissuecore.util.global.Variables;
 
 public class PpidGeneratorImpl implements PpidGenerator {
 
-	public String generatePpid(String ppidFormat, Long updatedValue) {
+	private KeyGenFactory keyFactory;
+	
+	private final String PPID = "participant protocol identifier";
+
+	public void setKeyFactory(KeyGenFactory keyFactory) {
+		this.keyFactory = keyFactory;
+	}
+
+	private String generatePpid(String ppidFormat, Long updatedValue) {
 
 		int ppidFormatEndIndex = ppidFormat.indexOf("\"", 1) + 1;
 		String ppidValue = ppidFormat.substring(0, ppidFormatEndIndex).trim().replace("\"", "");
@@ -51,6 +71,33 @@ public class PpidGeneratorImpl implements PpidGenerator {
 		}
 		return ppidMiddleValue;
 
+	}
+
+	@Override
+	public void generatePpid(CollectionProtocolRegistration cpr) {
+		ObjectCreationException exception = new ObjectCreationException();
+		String ppidFormat = cpr.getCollectionProtocol().getPpidFormat();
+		if (StringUtils.isBlank(ppidFormat) && !Variables.isProtocolParticipantIdentifierLabelGeneratorAvl) {
+			exception.addError(ParticipantErrorCode.MISSING_ATTR_VALUE, PPID);
+			throw exception;
+		}
+		if (StringUtils.isBlank(ppidFormat) && StringUtils.isEmpty(cpr.getProtocolParticipantIdentifier())) {
+			try {
+				final LabelGenerator ppIdGenrator = LabelGeneratorFactory
+						.getInstance(Constants.PROTOCOL_PARTICIPANT_IDENTIFIER_LABEL_GENERATOR_PROPERTY_NAME);
+				ppIdGenrator.setLabel(cpr);
+			}
+			catch (Exception ex) {
+				exception.addError(ParticipantErrorCode.MISSING_ATTR_VALUE, PPID);
+				throw exception;
+			}
+			return;
+		}
+
+		Long value = keyFactory.getValueByKey(cpr.getCollectionProtocol().getId().toString(),
+				CollectionProtocol.class.getName());
+		cpr.setProtocolParticipantIdentifier(generatePpid(ppidFormat, value));
+		return;
 	}
 
 }

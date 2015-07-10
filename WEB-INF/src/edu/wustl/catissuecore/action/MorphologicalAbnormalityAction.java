@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,6 +42,8 @@ public class MorphologicalAbnormalityAction extends BaseAction {
 			JSONArray outputArray = new JSONArray();
 			while (iterator.hasNext()) {
 				List row = (List) iterator.next();
+				String value = (String) row.get(0) + "(" + row.get(3) + ")";
+				row.add(0, value);
 				outputArray.put(row);
 			}
 			obj.put("data", outputArray);
@@ -61,11 +65,29 @@ public class MorphologicalAbnormalityAction extends BaseAction {
 		else {
 			List<NameValueBean> morphoList = new ArrayList<NameValueBean>();
 			results = bizLogic.getAllPvs(query);
+
+			List<String> morphoValues = new ArrayList<String>();
+
 			Iterator iterator = results.iterator();
+
+			List<String> values = new ArrayList<String>();
+
 			while (iterator.hasNext()) {
 				List row = (List) iterator.next();
-				morphoList.add(new NameValueBean(row.get(1), row.get(1)));
+				values.add((String) row.get(1));
+				String morphValue = (String) row.get(1) + "(" + (String) row.get(3) + ")";
+				morphoValues.add(morphValue);
 			}
+			Set<String> morphoValueSet = new TreeSet<String>(morphoValues);
+			List<String> morphoValueList = new ArrayList<String>(morphoValueSet);
+
+			Set<String> valuesSet = new TreeSet<String>(values);
+			List<String> valuesList = new ArrayList<String>(valuesSet);
+
+			for (int i = 0; i < morphoValueList.size() && i < valuesList.size(); i++) {
+				morphoList.add(new NameValueBean(morphoValueList.get(i), valuesList.get(i)));
+			}
+
 			response.flushBuffer();
 			response.setContentType("text/xml");
 			final PrintWriter out = response.getWriter();
@@ -80,8 +102,8 @@ public class MorphologicalAbnormalityAction extends BaseAction {
 		Iterator iterator = results.iterator();
 		while (iterator.hasNext()) {
 			List row = (List) iterator.next();
-			buffer.append("<item text=\"" + StringEscapeUtils.escapeXml((String) row.get(0)) + "\" id=\""
-					+ StringEscapeUtils.escapeXml((String) row.get(1)) + "\">");
+			buffer.append("<item text=\"" + StringEscapeUtils.escapeXml((String) row.get(0) + "(" + row.get(3) + ")")
+					+ "\" id=\"" + StringEscapeUtils.escapeXml((String) row.get(1)) + "\">");
 			if (row.get(2) != null && !row.get(2).toString().isEmpty()) {
 				buffer.append("<item></item>");
 			}
@@ -103,8 +125,8 @@ public class MorphologicalAbnormalityAction extends BaseAction {
 				if (count == 0) {
 					buffer.append("<option value='Not Specified'>Not Specified</option>");
 				}
-				buffer.append("<option value=\"" + StringEscapeUtils.escapeXml(nameValueBean.getName()) + "\"><![CDATA["
-						+ nameValueBean.getValue() + "]]></option>");
+				buffer.append("<option value=\"" + StringEscapeUtils.escapeXml(nameValueBean.getValue()) + "\"><![CDATA["
+						+ nameValueBean.getName() + "]]></option>");
 				count++;
 			}
 		}

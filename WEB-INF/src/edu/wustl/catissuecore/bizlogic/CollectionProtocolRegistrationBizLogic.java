@@ -153,15 +153,14 @@ public class CollectionProtocolRegistrationBizLogic extends CatissueDefaultBizLo
 			else
 			{
 				participant =(Participant) dao.retrieveById(collectionProtocolRegistration.getParticipant().getClass().getName(), collectionProtocolRegistration.getParticipant().getId());
-				participant.getCollectionProtocolRegistrationCollection().add(collectionProtocolRegistration);
+				
 			}
-
 			collectionProtocolRegistration.setParticipant(participant);
 			final String barcode = collectionProtocolRegistration.getBarcode();
 			this.generateCPRBarcode(collectionProtocolRegistration);
 			//Label generator for Protocol Participant Identifier
 			this.generateProtocolParticipantIdentifierLabel(collectionProtocolRegistration);
-
+			participant.getCollectionProtocolRegistrationCollection().add(collectionProtocolRegistration);
 			if ((barcode != collectionProtocolRegistration.getBarcode()) && barcode != null)
 			{
 				collectionProtocolRegistration.setBarcode(barcode);

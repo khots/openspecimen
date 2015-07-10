@@ -866,7 +866,7 @@
 								<html:hidden styleId="<%=containerIdStyle%>" property="<%=containerIdFromMapKey%>"/>
 								<td align="left" class="black_ar">
 
-								<div id="auto_<%=i%>" style="display:block" >
+								<div id="auto_<%=i%>" style="display:none" >
 									<ncombo:nlevelcombo dataMap="<%=dataMap%>"
 										attributeNames="<%=attrNames%>"
 										initialValues="<%=initValues%>"
@@ -889,11 +889,11 @@
 								</td>-->
 								<td align="left" class="black_ar">
 
-								<div id="manual_<%=i%>" style="display:none" >
-									<html:text styleClass="black_ar"  size="25" styleId="<%=containerStyle%>" property="<%=containerNameFromMapKey%>" disabled = "<%=textBoxDisable%>"/>
-									<html:text styleClass="black_ar"  size="5" styleId="<%=pos1Style%>" property="<%=pos1FromMapKey%>" disabled = "<%=textBoxDisable%>"/>
-									<html:text styleClass="black_ar"  size="5" styleId="<%=pos2Style%>" property="<%=pos2FromMapKey%>" disabled = "<%=textBoxDisable%>"/>
-									<html:button styleClass="black_ar" styleId = "<%=containerMapStyle%>" property="<%=containerMap%>" onclick="<%=buttonOnClicked%>" disabled = "<%=textBoxDisable%>">
+								<div id="manual_<%=i%>" style="display:block" >
+									<html:text styleClass="black_ar"  size="25" styleId="<%=containerStyle%>" property="<%=containerNameFromMapKey%>" />
+									<html:text styleClass="black_ar"  size="5" styleId="<%=pos1Style%>" property="<%=pos1FromMapKey%>" />
+									<html:text styleClass="black_ar"  size="5" styleId="<%=pos2Style%>" property="<%=pos2FromMapKey%>" />
+									<html:button styleClass="black_ar" styleId = "<%=containerMapStyle%>" property="<%=containerMap%>" onclick="<%=buttonOnClicked%>" >
 										<bean:message key="buttons.map"/>
 									</html:button>
 								</div>

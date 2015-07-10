@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.krishagni.catissueplus.core.barcodegenerator.BarcodeGenerator;
@@ -48,6 +49,7 @@ import com.krishagni.catissueplus.core.de.services.SavedQueryErrorCode;
 import com.krishagni.catissueplus.core.labelgenerator.LabelGenerator;
 
 import edu.wustl.catissuecore.domain.SpecimenRequirement;
+import edu.wustl.common.util.XMLPropertyHandler;
 
 @Service(value = "specimenCollGroupService")
 public class SpecimenCollGroupServiceImpl implements SpecimenCollGroupService {
@@ -117,7 +119,10 @@ public class SpecimenCollGroupServiceImpl implements SpecimenCollGroupService {
 
 			}
 			else {
-				requirementList = daoFactory.getScgDao().getSpecimenRequirments(req.getId());
+				String createAnicipatedScg = XMLPropertyHandler.getValue("create.anticipated.scg");
+				if(StringUtils.isBlank(createAnicipatedScg) || !Boolean.valueOf(createAnicipatedScg)){
+					requirementList = daoFactory.getScgDao().getSpecimenRequirments(req.getId());
+				}
 				specimenList = daoFactory.getScgDao().getSpecimensList(req.getId());
 
 			}

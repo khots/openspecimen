@@ -226,6 +226,9 @@ function initPrepareSpecimenType()
                       
                       <tr class="tr_alternate_color_lightGrey">
                             <td align="left" class="black_ar align_right_style">
+                                <span class="blue_ar_b">
+                                    <img src="images/uIEnhancementImages/star.gif" alt="Mandatory Field" width="6" height="6" hspace="0" vspace="0" />
+                                </span>
                                 <bean:message key="specimen.createdDate"/>
                                     
                             </td>

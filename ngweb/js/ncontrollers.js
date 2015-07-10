@@ -733,8 +733,7 @@ angular.module('plus.controllers', ['checklist-model', 'ui.app'])
       return [
         "Participant.id", "Participant.firstName", "Participant.lastName", 
         "Participant.dateOfBirth", "Participant.ssn", "Participant.gender",
-        "Participant.genotype", "Participant.race", "Participant.regDate",
-        "Participant.ppid", "Participant.activityStatus"
+        "Participant.regDate", "Participant.ppid", "Participant.activityStatus"
       ];
     }
 

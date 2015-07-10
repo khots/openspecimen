@@ -42,62 +42,150 @@
 </style>
 
 <script language="JavaScript">
-		function getUmlModelLink()
-		{
-				var  frameUrl="<%=XMLPropertyHandler.getValue("umlmodel.link")%>";
-				NewWindow(frameUrl,'name');
-		}
+	var timeOut;
+	var advanceTime;
+	var lastRefreshTime;//timestamp in millisecond of last accessed through child page
+	var pageLoadTime;
+	var warnTimeout;
+	var defTimeout;
+	var pvwindow;
+	<%
+	    int timeOut = -1;
+	    int advanceTime = Integer.parseInt(XMLPropertyHandler.getValue(Constants.SESSION_EXPIRY_WARNING_ADVANCE_TIME));
+	    String tempMsg = ApplicationProperties.getValue("app.session.advanceWarning");
+	    Object[] args = new Object[] {"" + advanceTime};
+	    String advanceTimeoutMesg = MessageFormat.format(tempMsg,args);
 
-		function getUserGuideLink()
-		{
-			var frameUrl = "<%=XMLPropertyHandler.getValue("userguide.link")%>";
+	    if(request.getSession() != null && request.getSession().getAttribute(Constants.SESSION_DATA) != null) { //if user is logged in
+	        //timeOut = request.getSession().getMaxInactiveInterval();
+	        String timeOutToSet = XMLPropertyHandler.getValue(Constants.SESSION_TIME_OUT);
+	        if(timeOutToSet != null) {
+	            request.getSession().setMaxInactiveInterval(Integer.parseInt(timeOutToSet) * 60);
+	            timeOut = request.getSession().getMaxInactiveInterval();
+	        }
+	    }
+	%>
+
+	timeOut = "<%= timeOut%>";
+	advanceTime = "<%= advanceTime%>";
+	pageLoadTime = new Date().getTime(); //timestamp in millisecond of last pageload
+	lastRefreshTime = pageLoadTime ; // last refreshtime in millisecond
+	setAdvanceSessionTimeout(timeOut);
+
+	function warnBeforeSessionExpiry() { 
+            //check for the last refresh time,whether page is refreshed in child frame after first load.
+	    if (lastRefreshTime > pageLoadTime) {
+	        var newTimeout = (lastRefreshTime - pageLoadTime) * 0.001;
+	        newTimeout = newTimeout + (advanceTime * 60.0);
+
+	        pageLoadTime = lastRefreshTime ;
+	        setAdvanceSessionTimeout(newTimeout);
+	    } else {
+	        defTimeout = setTimeout('sendToHomePage()', advanceTime * 60 * 1000);
+	        pvwindow=dhtmlmodal.open('Session Timeout', 'iframe', 'pages/SessionTimeOutWin.html','Session Timeout Warning', 'width=280px,height=115px,center=1,resize=0,scrolling=1');
+	    }
+	}
+
+	function setAdvanceSessionTimeout(ptimeOut) {
+	    if (ptimeOut > 0) {
+	        var time = (ptimeOut - (advanceTime * 60)) * 1000;
+	        warnTimeout = setTimeout('warnBeforeSessionExpiry()', time); //if session timeout, then redirect to Home page
+	    }
+	}
+
+	function sendToHomePage() {
+	    pvwindow.hide(); // closes the message box when session expires
+	    <%
+	        Object obj = request.getSession().getAttribute(Constants.SESSION_DATA);
+	        if(obj != null) {
+	    %>
+	           var timeoutMessage = "<%= ApplicationProperties.getValue("app.session.timeout") %>";
+	           window.location.href = "Logout.do";
+	           alert(timeoutMessage);
+	    <%
+	        }
+	    %>
+	}
+
+	function cancelMethod() {
+	    clearTimeout(defTimeout);
+	    setAdvanceSessionTimeout(timeOut);
+	}
+
+	function getSessionWarnMessage() {
+	    return '<%=advanceTimeoutMesg%>';
+	}
+
+	function detectApplicationUsageActivity() {
+	    var currentTime = new Date().getTime();
+	    var activationTime = currentTime - pageLoadTime;
+	    var advTime = (advanceTime * 1) + 1;
+
+	    if(((timeOut * 1000) - activationTime) <= (advTime * 60 * 1000)) {
+	        lastRefreshTime = new Date().getTime();
+                //sendBlankRequest();
+	        clearTimeout(warnTimeout);
+	        clearTimeout(defTimeout);
+	        setAdvanceSessionTimeout(timeOut);
+	    }
+	}
+
+	function getUmlModelLink()
+	{
+			var  frameUrl="<%=XMLPropertyHandler.getValue("umlmodel.link")%>";
 			NewWindow(frameUrl,'name');
-		}
+	}
+
+	function getUserGuideLink()
+	{
+		var frameUrl = "<%=XMLPropertyHandler.getValue("userguide.link")%>";
+		NewWindow(frameUrl,'name');
+	}
+	
+	function getHelpURL()
+	{
+		var URL;
 		
-		function getHelpURL()
+		
+		<%
+		if(null!=helpURL) 
 		{
-			var URL;
-			
-			
-			<%
-			if(null!=helpURL) 
-			{
-				if(null==pageOf && null!=view && "cpBasedView".equals(view))
-				{%>
-					URL=document.getElementById('cpFrameNew').contentWindow.updateHelpURL();
-				<%}
-				else if(!"".equals(helpURL))
-				{%>
-					URL="<%=helpURL%>";
-				<%}
-			}%>
-			var windLoc = document.URL;
-			if(windLoc != "" && windLoc.indexOf("/query.do") != -1){
-				URL = "<%=HelpXMLPropertyHandler.getValue("Query")%>";
-				window.open(URL,'_blank');
-			}
-			else if(windLoc != "" && windLoc.indexOf("/ecrf.do") != -1){
-				URL = "<%=HelpXMLPropertyHandler.getValue("FormCreation")%>";
-				window.open(URL,'_blank');
-			}
-			else if(windLoc != "" && windLoc.indexOf("/loadcsd.do") != -1){
-				URL = "<%=HelpXMLPropertyHandler.getValue("FormCreation")%>";
-				window.open(URL,'_blank');
-			}
-			else if(windLoc != "" && windLoc.indexOf("/ViewSpecimenList.do") != -1){
-				URL = "<%=HelpXMLPropertyHandler.getValue("SpecimenList")%>";
-				window.open(URL,'_blank');
-			}
-			else if(windLoc != "" && windLoc.indexOf("/AuditReport.do") != -1){
-				URL = "<%=HelpXMLPropertyHandler.getValue("AuditReport")%>";
-				window.open(URL,'_blank');
-			}
-			else if(URL!="")
-			{
-				window.open(URL,'_blank');
-			}			
+			if(null==pageOf && null!=view && "cpBasedView".equals(view))
+			{%>
+				URL=document.getElementById('cpFrameNew').contentWindow.updateHelpURL();
+			<%}
+			else if(!"".equals(helpURL))
+			{%>
+				URL="<%=helpURL%>";
+			<%}
+		}%>
+		var windLoc = document.URL;
+		if(windLoc != "" && windLoc.indexOf("/query.do") != -1){
+			URL = "<%=HelpXMLPropertyHandler.getValue("Query")%>";
+			window.open(URL,'_blank');
 		}
-	</script>
+		else if(windLoc != "" && windLoc.indexOf("/ecrf.do") != -1){
+			URL = "<%=HelpXMLPropertyHandler.getValue("FormCreation")%>";
+			window.open(URL,'_blank');
+		}
+		else if(windLoc != "" && windLoc.indexOf("/loadcsd.do") != -1){
+			URL = "<%=HelpXMLPropertyHandler.getValue("FormCreation")%>";
+			window.open(URL,'_blank');
+		}
+		else if(windLoc != "" && windLoc.indexOf("/ViewSpecimenList.do") != -1){
+			URL = "<%=HelpXMLPropertyHandler.getValue("SpecimenList")%>";
+			window.open(URL,'_blank');
+		}
+		else if(windLoc != "" && windLoc.indexOf("/AuditReport.do") != -1){
+			URL = "<%=HelpXMLPropertyHandler.getValue("AuditReport")%>";
+			window.open(URL,'_blank');
+		}
+		else if(URL!="")
+		{
+			window.open(URL,'_blank');
+		}			
+	}
+</script>
 <!--Jitendra -->
 
 <SCRIPT>var imgsrc="images/";</SCRIPT>

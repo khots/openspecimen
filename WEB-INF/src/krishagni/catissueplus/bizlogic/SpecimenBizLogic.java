@@ -568,6 +568,11 @@ public class SpecimenBizLogic
 			LOGGER.error("Specimen label cannot be empty.");
 			throw new CatissueException(SpecimenErrorCodeEnum.LABEL_REQUIRED.getCode());
 		}
+
+		if(specimen.getCreatedOn() == null) {
+			throw new CatissueException(SpecimenErrorCodeEnum.CREATED_DATE_REQUIRED.getCode());
+		}
+		
 //		checkDuplicateSpecimenFields(specimen, hibernateDao);
 	}
 	
@@ -1124,7 +1129,7 @@ public class SpecimenBizLogic
 		final SpecimenPosition prevPosition = specimen.getSpecimenPosition();
 		specimen.setSpecimenPosition(null);
 		specimen.setIsAvailable(Boolean.FALSE);
-//		specimen.setActivityStatus(disposalEventParameters.getActivityStatus());
+		specimen.setActivityStatus(disposalEventParameters.getActivityStatus());
 		hibernateDao.update(specimen);
 		if(prevPosition != null)
 		{

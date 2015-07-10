@@ -31,6 +31,10 @@ import com.krishagni.catissueplus.core.common.util.KeyGenFactory;
 
 import edu.wustl.catissuecore.domain.CollectionProtocol;
 import edu.wustl.catissuecore.domain.ConsentTier;
+import edu.wustl.catissuecore.namegenerator.LabelGenerator;
+import edu.wustl.catissuecore.namegenerator.LabelGeneratorFactory;
+import edu.wustl.catissuecore.util.global.Constants;
+import edu.wustl.catissuecore.util.global.Variables;
 
 public class CollectionProtocolRegistrationFactoryImpl implements CollectionProtocolRegistrationFactory {
 
@@ -45,11 +49,11 @@ public class CollectionProtocolRegistrationFactoryImpl implements CollectionProt
 	private final String CONSENT_WITNESS = "consent witness";
 
 	private ParticipantFactory participantFactory;
-
-	private KeyGenFactory keyFactory;
-
-	public void setKeyFactory(KeyGenFactory keyFactory) {
-		this.keyFactory = keyFactory;
+	
+	private PpidGenerator ppidGenerator;
+	
+	public void setPpidGenerator(PpidGenerator ppidGenerator) {
+		this.ppidGenerator = ppidGenerator;
 	}
 
 	public void setParticipantFactory(ParticipantFactory participantFactory) {
@@ -73,7 +77,7 @@ public class CollectionProtocolRegistrationFactoryImpl implements CollectionProt
 		setRegistrationDate(registration, detail.getRegistrationDate(), exception);
 		setActivityStatus(registration, detail.getActivityStatus(), exception);
 		setCollectionProtocol(registration, detail, exception);
-		setPPId(registration, detail.getPpid(), exception);
+		
 
 		Long participantId = detail.getParticipantDetail().getId();
 		Participant participant;
@@ -87,6 +91,7 @@ public class CollectionProtocolRegistrationFactoryImpl implements CollectionProt
 			exception.addError(ParticipantErrorCode.INVALID_ATTR_VALUE, "participant");
 		}
 		registration.setParticipant(participant);
+		setPPId(registration, detail.getPpid(), exception);
 		exception.checkErrorAndThrow();
 		return registration;
 	}
@@ -183,25 +188,17 @@ public class CollectionProtocolRegistrationFactoryImpl implements CollectionProt
 	 * @param exception 
 	 */
 	private void setPPId(CollectionProtocolRegistration registration, String ppId, ObjectCreationException exception) {
-	    String ppidFormat = registration.getCollectionProtocol().getPpidFormat();
+	   
 	   if (StringUtils.isBlank(ppId)){
-	        if(StringUtils.isBlank(ppidFormat)){
-	            exception.addError(ParticipantErrorCode.MISSING_ATTR_VALUE, PPID);
-	            return;
-	        }
-	        
-	        Long value = keyFactory.getValueByKey(registration.getCollectionProtocol().getId().toString(),
-	                CollectionProtocol.class.getName());
-	        PpidGenerator generator = new PpidGeneratorImpl();
-	        registration.setProtocolParticipantIdentifier(generator.generatePpid(ppidFormat, value));
+	  	 try{
+	  		 ppidGenerator.generatePpid(registration);
+	  	 }catch(ObjectCreationException e){
+	  		 exception.addError(ParticipantErrorCode.MISSING_ATTR_VALUE, PPID);
+	  	 }
 	    }
 	    else{
 	        registration.setProtocolParticipantIdentifier(ppId);
 	    }
-		
-	    
-		
-
 	}
 
 	/**

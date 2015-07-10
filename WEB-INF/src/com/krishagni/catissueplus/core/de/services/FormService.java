@@ -1,5 +1,7 @@
 package com.krishagni.catissueplus.core.de.services;
 
+import java.util.Map;
+
 import com.krishagni.catissueplus.core.de.events.AddFormContextsEvent;
 import com.krishagni.catissueplus.core.de.events.AddRecordEntryEvent;
 import com.krishagni.catissueplus.core.de.events.AllFormsSummaryEvent;
@@ -66,8 +68,9 @@ public interface FormService {
 	public RecordEntriesDeletedEvent deleteRecords(DeleteRecordEntriesEvent delRecEntry);
 
 	public RecordEntryEventAdded addRecordEntry(AddRecordEntryEvent req);
-
+	
 	public BOTemplateGeneratedEvent genereateBoTemplate(BOTemplateGenerationEvent boReq);
 
-	
+
+	public Map<String, Object> getAppData(Long formId, Map<String, Object> recIntegrationInfo);
 }

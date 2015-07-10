@@ -772,7 +772,7 @@ public class Participant extends AbstractDomainObject
 
 			// Collection Protocol Registration of the participant
 			// (Abhishek Mehta)
-			collectionProtocolRegistrationCollection.clear();
+//			collectionProtocolRegistrationCollection.clear();
 			final Map mapCollectionProtocolRegistrationCollection = form
 					.getCollectionProtocolRegistrationValues();
 			logger.debug("Map " + map);
@@ -794,12 +794,22 @@ public class Participant extends AbstractDomainObject
 				cpr.setBarcode(form.getBarcode());
 				Set<CollectionProtocolRegistration> list = new HashSet<CollectionProtocolRegistration>();
 				list.add(cpr);
-				collectionProtocolRegistrationCollection = list;
+				boolean isAdd = true;
+				for (CollectionProtocolRegistration collProtReg : collectionProtocolRegistrationCollection) {
+					if(collProtReg.getId().equals(cpr.getId())){
+						updateExisting(cpr, collProtReg);
+//						collProtReg.set
+						isAdd = false;
+					}
+				}
+				if(isAdd){
+					collectionProtocolRegistrationCollection.add(cpr);// = list;
+				}
 			}else{
 				final MapDataParser parserCollectionProtocolRegistrationCollection = new MapDataParser(
 						"edu.wustl.catissuecore.domain");
-				collectionProtocolRegistrationCollection = parserCollectionProtocolRegistrationCollection
-						.generateData(mapCollectionProtocolRegistrationCollection);
+				collectionProtocolRegistrationCollection.addAll(parserCollectionProtocolRegistrationCollection
+						.generateData(mapCollectionProtocolRegistrationCollection));
 			}
 			logger.debug("ParticipantMedicalIdentifierCollection "
 					+ participantMedicalIdentifierCollection);
@@ -816,6 +826,14 @@ public class Participant extends AbstractDomainObject
 			final ErrorKey errorKey = ErrorKey.getErrorKey("assign.data.error");
 			throw new AssignDataException(errorKey, null, "Participant.java :");
 		}
+	}
+
+	private void updateExisting(CollectionProtocolRegistration cpr, CollectionProtocolRegistration collProtReg) {
+		collProtReg.setBarcode(cpr.getBarcode());
+		collProtReg.setActivityStatus(cpr.getActivityStatus());
+		collProtReg.setConsentDocumentName(cpr.getConsentDocumentName());
+		collProtReg.setProtocolParticipantIdentifier(cpr.getProtocolParticipantIdentifier());
+		collProtReg.setRegistrationDate(cpr.getRegistrationDate());
 	}
 
 	/**

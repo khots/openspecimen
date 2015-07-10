@@ -3,6 +3,7 @@ package com.krishagni.catissueplus.core.de.services.impl;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -325,9 +326,9 @@ public class FormServiceImpl implements FormService {
 			throw new IllegalArgumentException("Invalid form context id or object id ");
 		}
 
-		Long objectId = ((Double) appData.get("objectId")).longValue();
+		Long objectId = ((Number) appData.get("objectId")).longValue();
 		List<Long> formCtxtId = new ArrayList<Long>();
-		formCtxtId.add(((Double) appData.get("formCtxtId")).longValue());
+		formCtxtId.add(((Number) appData.get("formCtxtId")).longValue());
 		
 		List<FormContextBean> formContexts = formDao.getFormContextsById(formCtxtId);
 		if(formContexts == null) {
@@ -491,6 +492,24 @@ public class FormServiceImpl implements FormService {
 		}
 		
 		return BOTemplateGeneratedEvent.ok(null);
+	}
+	
+	@Override
+	@PlusTransactional
+	public Map<String, Object> getAppData(Long formId, Map<String, Object> recIntegrationInfo) {
+		String entityType = (String)recIntegrationInfo.get("entityType");
+
+		ObjectCpDetail objCp = formDao.getObjectCpDetail(recIntegrationInfo);
+		if (objCp == null) {
+			throw new IllegalArgumentException("Invalid record integration info");
+		}
+		
+		Long formCtxtId = formDao.getFormCtxtId(formId, entityType, objCp.getCpId());
+		
+		Map<String, Object> appData = new HashMap<String, Object>();
+		appData.put("objectId", objCp.getObjectId());
+		appData.put("formCtxtId", formCtxtId);
+		return appData;
 	}
 	
 	private List<FormFieldSummary> getFormFields(Container container) {

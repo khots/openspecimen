@@ -667,8 +667,7 @@ public class ShowStorageGridViewAction extends BaseAction
 									onClickEvent = "onclick=\\\\\"setTextBoxValueForContainer(\\\'"
 											+ containerStyle
 											+ "\\\',\\\'"
-											+ java.net.URLEncoder.encode(
-													storageContainerGridObject.getName(), "UTF-8")
+											+ storageContainerGridObject.getName()
 											+ "\\\');\\ "
 											+ "setTextBoxValue(\\\'"
 											+ xDimStyleId

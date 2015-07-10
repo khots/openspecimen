@@ -8,6 +8,7 @@ import java.util.List;
 import org.hibernate.Query;
 
 import com.krishagni.catissueplus.core.administrative.repository.CollectionProtocolDao;
+import com.krishagni.catissueplus.core.biospecimen.events.ChildCollectionProtocolSummary;
 import com.krishagni.catissueplus.core.biospecimen.events.CollectionProtocolSummary;
 import com.krishagni.catissueplus.core.common.repository.AbstractDao;
 
@@ -83,22 +84,23 @@ public class CollectionProtocolDaoImpl extends AbstractDao<CollectionProtocol> i
 	}
 
 	@Override
-	public List<CollectionProtocolSummary> getChildProtocols(Long cpId) {
+	public List<ChildCollectionProtocolSummary> getChildProtocols(Long cpId) {
 		Query query = sessionFactory.getCurrentSession().getNamedQuery(GET_CHILD_CPS);
 		query.setLong("parentId", cpId);
 		query.setString("activityStatus", Constants.ACTIVITY_STATUS_ACTIVE); 
 		List<Object[]> rows = query.list();
-		List<CollectionProtocolSummary> cps = new ArrayList<CollectionProtocolSummary>();
+		List<ChildCollectionProtocolSummary> cps = new ArrayList<ChildCollectionProtocolSummary>();
 		for (Object[] row : rows) {
-			CollectionProtocolSummary cp = new CollectionProtocolSummary();
+			ChildCollectionProtocolSummary cp = new ChildCollectionProtocolSummary();
 			cp.setId((Long) row[0]);
 			cp.setShortTitle((String) row[1]);
 			cp.setTitle((String) row[2]);
 			cp.setPpidFormat((String) row[3]);
 			cp.setCpType((String)row[4]);
+			cp.setSequenceNumber((Integer)row[5]);
 			cps.add(cp);
 		}
-
+		Collections.sort(cps);
 		return cps;
 	}
 	

@@ -418,7 +418,7 @@
         <set
             name="labelSQLAssociationCollection"
             table="LABELSQLASSOC"
-            lazy="false"
+            lazy="true"
             inverse="false"
             cascade="all"
             order-by="SEQ_ORDER"
@@ -452,8 +452,9 @@
           <return-scalar column="title" type="string"/>
           <return-scalar column="PPID_FORMAT" type="string"/>
           <return-scalar column="CP_TYPE" type="string"/>
+          <return-scalar column="SEQUENCE_NUMBER" type="int"/>
           select 
-            identifier, short_title, title, PPID_FORMAT, CP_TYPE
+            identifier, short_title, title, PPID_FORMAT, CP_TYPE, SEQUENCE_NUMBER
           from 
             catissue_collection_protocol 
           where 

@@ -225,10 +225,14 @@ angular.module('plus.cpview', [])
   $scope.handleSubCPScenario = function(displayNode) {//alert('here for status update');
   $scope.$apply(function(){
     $scope.selectedNode.collectionStatus=$scope.getStatusIcon(displayNode.collectionStatus,displayNode.cpType);
-	$scope.selectedNode.nodes=[];
+	
 	$scope.selectedNode.state='closed';
 	if($scope.selectedNode.type == 'childCP'){
 		$scope.selectedNode.regId=displayNode.id;
+		$scope.selectedNode.nodes=[];
+	}
+	if($scope.selectedNode.type == 'scg'){
+		$scope.selectedNode.nodes=[];
 	}
 	$scope.selectedNode.childrenProbed='';
 	if($scope.selectedNode.type == 'specimen' && displayNode.name){
@@ -424,7 +428,7 @@ angular.module('plus.cpview', [])
   	  $scope.selectedSubCpId=data.scgId;
 	  var participantId = $scope.selectedParticipant.id.split(',')[0];
 	  
-      var url = "CPQuerySubCollectionProtocolRegistration.do?pageOf=pageOfCollectionProtocolRegistrationCPQuery&refresh=false&operation=add&cpSearchParticipantId="+participantId+"&cpSearchCpId="+data.scgId+"&participantId="+participantId+"&clickedNodeId="+data.id+"&regDate=&parentCPId="+$scope.selectedCp.id;
+      var url = "CPQuerySubCollectionProtocolRegistration.do?pageOf=pageOfCollectionProtocolRegistrationCPQuery&refresh=false&operation=add&cpSearchParticipantId="+participantId+"&cpSearchCpId="+data.scgId+"&participantId="+participantId+"&regDate=&parentCPId="+$scope.selectedCp.id;
 	  
 		
       $('#cpFrameNew').attr('src',url);

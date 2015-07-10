@@ -33,7 +33,12 @@ public class StorageContainerControl extends AbstractLookupControl {
 	public Properties getPvSourceProps() {
 		return LU_PV_SOURCE_PROPS;
 	}
-		
+
+	@Override
+	public String getAltKeyColumn() {
+		return getValueColumn();
+	}
+	
 	private static Properties initPvSourceProps() {
 		Properties props = new Properties();
 		props.put("apiUrl", "rest/ng/storage-containers");

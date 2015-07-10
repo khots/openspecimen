@@ -5,12 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import krishagni.catissueplus.rest.AuthenticatedSessionCtx;
 import edu.common.dynamicextensions.domain.nui.*;
+
 import org.springframework.context.ApplicationContext;
 
 import com.krishagni.catissueplus.core.common.OpenSpecimenAppCtxProvider;
 import com.krishagni.catissueplus.core.de.events.AddRecordEntryEvent;
+import com.krishagni.catissueplus.core.de.events.FormDataEvent;
 import com.krishagni.catissueplus.core.de.events.RecordEntryEventAdded;
+import com.krishagni.catissueplus.core.de.events.SaveFormDataEvent;
 import com.krishagni.catissueplus.core.de.services.FormService;
 
 import edu.common.dynamicextensions.napi.ControlValue;
@@ -102,35 +106,25 @@ public class CaTissueAppServiceImpl extends AbstractBulkOperationAppService {
 
 	public Long insertDEObject(String formName, final Map<String, Object> dataValue, HookingInformation recEntryInfo)
 	throws Exception {
-		Long recordId = null;
+		AuthenticatedSessionCtx.setCtx(recEntryInfo.getSessionDataBean());
+		
 		Container c = Container.getContainer(formName);
-		FormData formData = getFormData(c, dataValue);
+		FormData formData = getFormData(c, dataValue, getFormSvc().getAppData(c.getId(), recEntryInfo.getDataHookingInformation()));				
 		final SessionDataBean sessionDataBean = recEntryInfo.getSessionDataBean();
 
-		UserContext ctxt =  new UserContext() {
-			@Override
-			public String getUserName() {
-				return sessionDataBean.getUserName();
-			}
-
-			@Override
-			public Long getUserId() {
-				return sessionDataBean.getUserId();
-			}
-
-			@Override
-			public String getIpAddress() {
-				return sessionDataBean.getIpAddress();
-			}
-		};
-		FormDataManager formDataManager = new FormDataManagerImpl(false);
-		recordId = formDataManager.saveOrUpdateFormData(ctxt, formData);
-		hookStaticDynExtObj(recEntryInfo, c.getId(), recordId);
-		return recordId;
+		SaveFormDataEvent req = new SaveFormDataEvent();
+		req.setFormId(c.getId());
+		req.setFormData(formData);
+		req.setSessionDataBean(sessionDataBean);
+		
+		FormDataEvent resp = getFormSvc().saveFormData(req);
+		return resp.getRecordId();		
 	}
 
-	private FormData getFormData(Container c, Map<String, Object> dataValue) {
+	private FormData getFormData(Container c, Map<String, Object> dataValue, Map<String, Object> appData) {
 		FormData formData = new FormData(c);
+		formData.setAppData(appData);
+		
 		for (Control ctrl : c.getControlsMap().values()) {
 			if (ctrl instanceof SubFormControl) {
 				SubFormControl sfCtrl = (SubFormControl) ctrl;
@@ -138,16 +132,21 @@ public class CaTissueAppServiceImpl extends AbstractBulkOperationAppService {
                                 .append(sfCtrl.getSubContainer().getName()).toString();
                 List<Map<String, Object>> sfDataValueList = (List<Map<String, Object>>) dataValue.get(sfKey);
 				
-				if (sfDataValueList == null) {
+				if (sfDataValueList == null || sfDataValueList.isEmpty()) {
 					formData.addFieldValue(new ControlValue(sfCtrl, null));
 					continue;
 				}
 				
 				List<FormData> subFormsData = new ArrayList<FormData>();
 				for (Map<String, Object> sfDataValue : sfDataValueList) {
-                    subFormsData.add(getFormData(sfCtrl.getSubContainer(), sfDataValue));
+                    subFormsData.add(getFormData(sfCtrl.getSubContainer(), sfDataValue, appData));
 				}
-				formData.addFieldValue(new ControlValue(sfCtrl, subFormsData));
+				
+				if (sfCtrl.isOneToOne()) {
+					formData.addFieldValue(new ControlValue(sfCtrl, subFormsData.get(0)));
+				} else {
+					formData.addFieldValue(new ControlValue(sfCtrl, subFormsData));
+				}				
 				continue;
 			}
 
@@ -175,8 +174,7 @@ public class CaTissueAppServiceImpl extends AbstractBulkOperationAppService {
 
 	protected List<Object> hookStaticDynExtObj(HookingInformation recEntryInfo, Long containerId, Long recordId)
 	throws Exception {
-		ApplicationContext caTissueContext = OpenSpecimenAppCtxProvider.getAppCtx();
-		FormService formSvc = (FormService) caTissueContext.getBean("formSvc");
+		FormService formSvc = getFormSvc();
 		Map<String,Object> recIntegrationInfo = recEntryInfo.getDataHookingInformation();
 
 		AddRecordEntryEvent req = new AddRecordEntryEvent();
@@ -189,9 +187,16 @@ public class CaTissueAppServiceImpl extends AbstractBulkOperationAppService {
 
 		return null;
 	}
+		
 
 	@Override
 	protected Long hookStaticDynExtObject(Object arg0) throws Exception {
 		return null;
+	}
+	
+	private FormService getFormSvc() {
+		ApplicationContext caTissueContext = OpenSpecimenAppCtxProvider.getAppCtx();
+		return (FormService) caTissueContext.getBean("formSvc");
+		
 	}
 }

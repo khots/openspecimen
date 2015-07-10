@@ -796,6 +796,7 @@ function submitTabData(operation)
 		tabDataJSON["isToPrintLabel"]=printFlag;
 		tabDataJSON["lineage"]=document.getElementById("lineage").value;
 		tabDataJSON["collectionStatus"]=collectionStatusCombo.getSelectedText();
+		tabDataJSON["tissueSite"]=tissueSiteCombo.getSelectedValue();
 		var spId = document.getElementById("id").value;
 		if(spId != null && spId != "")
 		{
@@ -835,7 +836,7 @@ function submitTabData(operation)
 		
 		if(morphologicalAbnormalityValue != null && morphologicalAbnormalityValue != "" &&  morphologicalAbnormalityValue != "Not Specified")
 		{
-			tabDataJSON["morphologicalAbnormality"] = morphologicalAbnormalityValue; 
+		  tabDataJSON["morphologicalAbnormality"] = value; 
 		}
 	
 		createRESTSpec(tabDataJSON,printFlag,operation);
@@ -937,7 +938,7 @@ req.onreadystatechange = function() {
 		}
 		else if(operation == 'add')
 		{
-			specimenData['tissueSite']=tissueSiteCombo.getSelectedText();
+			specimenData['tissueSite']=tissueSiteCombo.getSelectedValue();
 			specimenData['tissueSide']=tissueSideCombo.getSelectedText();
 			specimenData['pathologicalStatus']=pathologicalStatusCombo.getSelectedText();
 			req.open("POST", "rest/specimens/", false);

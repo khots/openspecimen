@@ -28,7 +28,8 @@ public enum SpecimenErrorCodeEnum
 	POSITION_ALREADY_OCCUPIED(1040,"Storage position is already occupied by other specimen."),
 	INVALID_USER(1041,"Please provide valid user information"),
 	SPECIMEN_NOT_AVAILABLE(1042,"Cannot create child specimen(s) since specimen is not available."),
-    INTERNAL_SERVER_ERROR(1050,"Error while performing update operation");
+    INTERNAL_SERVER_ERROR(1050,"Error while performing update operation"),
+    CREATED_DATE_REQUIRED(1051, "Created date cannot be empty.");
     
     private int code;
     private String description;

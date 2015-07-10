@@ -1,7 +1,6 @@
 
 package com.krishagni.catissueplus.core.biospecimen.repository.impl;
 
-import edu.wustl.catissuecore.domain.CollectionProtocolEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,6 +22,7 @@ import com.krishagni.catissueplus.core.common.util.Status;
 import com.krishagni.catissueplus.core.common.util.Utility;
 
 import edu.wustl.catissuecore.domain.CollectionProtocolEvent;
+import edu.wustl.common.util.XMLPropertyHandler;
 
 @Repository("collectionProtocolRegistrationDao")
 public class CollectionProtocolRegistrationDaoImpl extends AbstractDao<CollectionProtocolRegistration>
@@ -93,10 +93,13 @@ public class CollectionProtocolRegistrationDaoImpl extends AbstractDao<Collectio
 			scgsInfo.add(SpecimenCollectionGroupInfo.fromScg(specimenCollectionGroup, cpr.getRegistrationDate()));
 			}
 		}
-		Collection<CollectionProtocolEvent> cpes = cpr.getCollectionProtocol().getCollectionProtocolEventCollection();
-		for (CollectionProtocolEvent collectionProtocolEvent : cpes) {
-			if(!Status.ACTIVITY_STATUS_DISABLED.getStatus().equals(collectionProtocolEvent.getActivityStatus())){
-			scgsInfo.add(SpecimenCollectionGroupInfo.fromCpe(collectionProtocolEvent, cpr.getRegistrationDate()));
+		String createAnicipatedScg = XMLPropertyHandler.getValue("create.anticipated.scg");
+		if(StringUtils.isBlank(createAnicipatedScg) || !Boolean.valueOf(createAnicipatedScg)){
+			Collection<CollectionProtocolEvent> cpes = cpr.getCollectionProtocol().getCollectionProtocolEventCollection();
+			for (CollectionProtocolEvent collectionProtocolEvent : cpes) {
+				if(!Status.ACTIVITY_STATUS_DISABLED.getStatus().equals(collectionProtocolEvent.getActivityStatus())){
+				scgsInfo.add(SpecimenCollectionGroupInfo.fromCpe(collectionProtocolEvent, cpr.getRegistrationDate()));
+				}
 			}
 		}
 

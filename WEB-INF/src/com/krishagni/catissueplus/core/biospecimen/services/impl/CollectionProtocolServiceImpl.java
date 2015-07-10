@@ -8,6 +8,7 @@ import java.util.List;
 import com.krishagni.catissueplus.core.administrative.events.ChildCollectionProtocolsEvent;
 import com.krishagni.catissueplus.core.administrative.events.ReqChildProtocolEvent;
 import com.krishagni.catissueplus.core.biospecimen.events.AllCollectionProtocolsEvent;
+import com.krishagni.catissueplus.core.biospecimen.events.ChildCollectionProtocolSummary;
 import com.krishagni.catissueplus.core.biospecimen.events.CollectionProtocolSummary;
 import com.krishagni.catissueplus.core.biospecimen.events.ParticipantInfo;
 import com.krishagni.catissueplus.core.biospecimen.events.ParticipantSummaryEvent;
@@ -103,7 +104,7 @@ public class CollectionProtocolServiceImpl implements CollectionProtocolService 
 	@PlusTransactional
 	public ChildCollectionProtocolsEvent getChildProtocols(ReqChildProtocolEvent req) {
 		Long cpId = req.getCpId();
-		List<CollectionProtocolSummary> list = daoFactory.getCollectionProtocolDao().getChildProtocols(cpId);
+		List<ChildCollectionProtocolSummary> list = daoFactory.getCollectionProtocolDao().getChildProtocols(cpId);
 		return ChildCollectionProtocolsEvent.ok(list);
 	}
 

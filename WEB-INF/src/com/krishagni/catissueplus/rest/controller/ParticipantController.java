@@ -60,16 +60,21 @@ public class ParticipantController {
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
-	public ParticipantDetail getParticipantById(@PathVariable("id") Long participantId) {
+	public ParticipantDetail getParticipantById(
+			@PathVariable("id") Long participantId,
+			@RequestParam(value = "includeRegistrations", required = false, defaultValue = "false") Boolean includeRegs) {
 		ReqParticipantDetailEvent event = new ReqParticipantDetailEvent();
 		event.setParticipantId(participantId);
+		event.setIncludeRegistrations(includeRegs);
 
 		ParticipantDetailEvent resp = participantSvc.getParticipant(event);
 		if (!resp.isSuccess()) {
 			resp.raiseException();
 		}
-			return resp.getParticipantDetail();
+		
+		return resp.getParticipantDetail();
 	}
+	
 	@RequestMapping(method = RequestMethod.GET, value = "/{id}/registrations")
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
@@ -181,7 +186,8 @@ public class ParticipantController {
 		if (!resp.isSuccess()) {
 			resp.raiseException();
 		}
-			return resp.getMatchingParticipants();
+		
+		return resp.getMatchingParticipants();
 	}
 
 	private SessionDataBean getSession() {

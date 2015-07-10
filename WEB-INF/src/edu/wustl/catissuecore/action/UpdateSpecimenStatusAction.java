@@ -860,13 +860,8 @@ public class UpdateSpecimenStatusAction extends BaseAction
 		Date timeStamp = null;
 		try
 		{
-			final String query = "select collectionEventParameters.timestamp"
-					+ " from edu.wustl.catissuecore.domain.CollectionEventParameters"
-					+ " as collectionEventParameters where "
-					+ " collectionEventParameters.specimenCollectionGroup.id"
-					+ " = (select specimen.specimenCollectionGroup.id"
-					+ " from edu.wustl.catissuecore.domain.Specimen as" + " specimen where "
-					+ "specimen.id = " + specimen.getId() + ")";
+			String query = "select specimen.specimenCollectionGroup.collectionTimestamp from "+Specimen.class.getName()+" specimen"
+					+ " where specimen.id ="+specimen.getId();
 
 			final List<Date> list = new DefaultBizLogic().executeQuery(query);
 			final Iterator<Date> itr = list.iterator();

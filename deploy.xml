@@ -1002,9 +1002,13 @@
 		<antcall target="upgrade_db_to_plus_v10"/>
 		<antcall target="upgrade_db_to_plus_v20"/>
 	</target>
+	<target name="liquibase_upgrade_tissue_site_value">
+		<echo message="Upgrading DB using Liquibase Targets"/>
+		<updateDatabase changeLogFile="${base.dir}/SQL/liquibase_xml/tissue_site_value_script.xml" driver="${final.database.driver}" url="${final.database.url}" username="${database.username}" password="${database.password}" dropFirst="false" classpathref="liquibaseClasspath" />
+	</target>
 	<target name="upgrade_db_plusv3.1">
 		<echo message="Upgrading DataBase with URL ${final.database.url}" />	
-		<updateDatabase changeLogFile="${base.dir}/SQL/liquibase_xml/DBUpgrade_v31.xml" driver="${final.database.driver}" url="${final.database.url}" username="${database.username}" password="${database.password}" dropFirst="false" classpathref="liquibaseClasspath" />
+		<updateDatabase changeLogFile="${base.dir}/SQL/liquibase_xml/DBUpgrade_v31.xml"	driver="${final.database.driver}" url="${final.database.url}"	username="${database.username}" password="${database.password}" dropFirst="false" classpathref="liquibaseClasspath" />
 	</target>
 	<target name="upgrade_db_plusv3.2">
            <echo message="Upgrading DataBase with URL ${final.database.url}" />    

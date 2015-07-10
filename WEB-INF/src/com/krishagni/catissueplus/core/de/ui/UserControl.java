@@ -11,6 +11,8 @@ public class UserControl extends AbstractLookupControl {
 	
 	private static final String LU_TABLE = "USER_VIEW";
 	
+	private static final String ALT_KEY = "email_address";
+	
 	private static final Properties LU_PV_SOURCE_PROPS = initPvSourceProps();
 	
 	@Override
@@ -33,7 +35,12 @@ public class UserControl extends AbstractLookupControl {
 	public Properties getPvSourceProps() {
 		return LU_PV_SOURCE_PROPS;
 	}
-		
+	
+	@Override
+	public String getAltKeyColumn() {		
+		return ALT_KEY;
+	}
+	
 	private static Properties initPvSourceProps() {
 		Properties props = new Properties();
 		props.put("apiUrl", "rest/ng/users");

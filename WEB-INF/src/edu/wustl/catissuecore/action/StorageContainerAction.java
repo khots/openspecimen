@@ -191,8 +191,8 @@ public class StorageContainerAction extends SecureAction
 			if (storageContainerForm.getTypeId() != -1)
 			{
 				final long start = System.currentTimeMillis();
-				containerMap = bizLogic.getAllocatedContainerMapForContainer(storageContainerForm
-						.getTypeId(), sessionDataBean, dao,storageContainerForm.getParentContainerSelected(),"");
+//				containerMap = bizLogic.getAllocatedContainerMapForContainer(storageContainerForm
+//						.getTypeId(), sessionDataBean, dao,storageContainerForm.getParentContainerSelected(),"");
 				final long end = System.currentTimeMillis();
 
 				System.out.println("Time taken for getAllocatedMapForCOntainer:" + (end - start));
@@ -207,8 +207,8 @@ public class StorageContainerAction extends SecureAction
 					final StorageType storageType = (StorageType) storageTypeList.get(0);
 					final Long typeId = storageType.getId();
 					final long start = System.currentTimeMillis();
-					containerMap = bizLogic.getAllocatedContainerMapForContainer(typeId,
-					sessionDataBean, dao,storageContainerForm.getParentContainerSelected(),"");
+//					containerMap = bizLogic.getAllocatedContainerMapForContainer(typeId,
+//					sessionDataBean, dao,storageContainerForm.getParentContainerSelected(),"");
 					final long end = System.currentTimeMillis();
 					System.out.println("Time taken for getAllocatedMapForCOntainer:"
 							+ (end - start));
